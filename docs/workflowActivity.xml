@@ -1,0 +1,11 @@
+<bpmn:task id="TriggerConfirmation" name="trigger-rc">
+    <bpmn:extensionElements>
+        <wf:type>trigger_read_confirmation</wf:type>
+    </bpmn:extensionElements>
+    <!-- Specify `pagename` property if you want to run on an explicit page,
+    otherwise the "workflow context" page will be used -->
+    <bpmn:property name="audience_users">UserA,UserB</bpmn:property>
+    <bpmn:property name="audience_groups">sysop</bpmn:property>
+    <bpmn:incoming>...</bpmn:incoming>
+    <bpmn:outgoing>...</bpmn:outgoing>
+</bpmn:task>

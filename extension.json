@@ -1,0 +1,249 @@
+{
+	"name": "PageReadConfirmations",
+	"version": "1.0.0-alpha",
+	"license-name": "GPL-3.0-only",
+	"author": [
+		"[https://www.hallowelt.com Hallo Welt! GmbH]"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:PageReadConfirmations",
+	"descriptionmsg": "page-read-confirmations-desc",
+	"requires": {
+		"MediaWiki": ">= 1.43.0",
+		"extensions": {
+			"OOJSPlus": "*",
+			"StandardDialogs": "*"
+		}
+	},
+	"attributes": {
+		"WikiAutomations": {
+			"Actions": {
+				"page-read-confirmations-trigger": {
+					"type": "generic",
+					"message": "page-read-confirmations-automation-action-trigger",
+					"spec": {
+						"class": "\\MediaWiki\\Extension\\PageReadConfirmations\\Integration\\WikiAutomations\\TriggerReadConfirmation",
+						"services": [ "PageReadConfirmations._AutomaticAssigner" ]
+					}
+				}
+			}
+		},
+		"BlueSpiceDiscovery": {
+			"MetaItemProviderRegistry": {
+				"read-confirmations": {
+					"class": "\\MediaWiki\\Extension\\PageReadConfirmations\\Integration\\MetaItemProvider\\ReadConfirmation",
+					"services": [ "PageReadConfirmations.Manager", "RevisionLookup" ]
+				}
+			}
+		},
+		"Workflows": {
+			"LogicObjects": {
+				"ActivityRegistry": {
+					"trigger_read_confirmation": {
+						"class": "\\MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Workflow\\TriggerReadConfirmationActivity",
+						"services": [
+							"TitleFactory", "PageReadConfirmations._AutomaticAssigner"
+						]
+					}
+				}
+			},
+			"EditorPluginModules": [
+				"ext.pageReadConfirmations.workflows.editor"
+			]
+		},
+		"NotifyMe": {
+			"Events": {
+				"page-read-confirmation-reminder": {
+					"spec": {
+						"class": "\\MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Event\\PageReadConfirmationReminderEvent"
+					},
+					"buckets": [
+						"personal"
+					],
+					"description": "page-read-confirmation-reminder-event"
+				}
+			}
+		}
+	},
+	"callback": "mwsInitComponents",
+	"MessagesDirs": {
+		"PageReadConfirmations": "i18n"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\PageReadConfirmations\\": "src/",
+		"MediaWiki\\Extension\\PageReadConfirmations\\Tests\\": "tests/phpunit"
+	},
+	"ResourceModules": {
+		"ext.pageReadConfirmations.bootstrap": {
+			"scripts": [
+				"bootstrap.js",
+				"Api.js"
+			],
+			"styles": [
+				"styles.less"
+			],
+			"messages": [
+				"page-read-confirmations-confirm-confirmation",
+				"page-read-confirmations-action-cancel",
+				"page-read-confirmations-action-confirm"
+			]
+		},
+		"ext.pageReadConfirmations.confirmationsPanel": {
+			"scripts": [
+				"ui/ConfirmationsPanel.js"
+			],
+			"dependencies": [
+				"ext.pageReadConfirmations.bootstrap"
+			],
+			"messages": [
+				"page-read-confirmations-label",
+				"page-read-confirmations-request-info",
+				"page-read-confirmations-no-request-info",
+				"page-read-confirmations-grid-column-user",
+				"page-read-confirmations-grid-column-read-version",
+				"page-read-confirmations-grid-column-read-time",
+				"page-read-confirmations-grid-column-status",
+				"page-read-confirmations-pending-count",
+				"page-read-confirmations-no-pending",
+				"page-read-confirmations-send-reminder",
+				"page-read-confirmations-more-actions",
+				"page-read-confirmations-edit-assignments",
+				"page-read-confirmations-cancel-request",
+				"page-read-confirmations-cancel-request",
+				"page-read-confirmations-confirm-cancel-request",
+				"page-read-confirmations-action-delete",
+				"page-read-confirmations-action-cancel",
+				"page-read-confirmations-error",
+				"page-read-confirmations-action-remind",
+				"page-read-confirmations-confirm-remind-request",
+				"page-read-confirmations-reminder-sent",
+				"page-read-confirmations-old-revision-warning-title",
+				"page-read-confirmations-old-revision-warning-body"
+			],
+			"styles": [
+				"styles.less"
+			]
+		},
+		"ext.pageReadConfirmations.assignments": {
+			"scripts": [
+				"ui/AssignmentPanel.js",
+				"ui/AssignmentDialog.js"
+			],
+			"dependencies": [
+				"ext.pageReadConfirmations.bootstrap"
+			],
+			"messages": [
+				"page-read-confirmations-error",
+				"page-read-confirmations-assign-instruction",
+				"page-read-confirmations-assign-users",
+				"page-read-confirmations-assign-groups",
+				"page-read-confirmations-assignment-dialog-title",
+				"page-read-confirmations-action-assign"
+			]
+		},
+		"ext.pageReadConfirmations.workflows.editor": {
+			"scripts": [
+				"ui/workflows/TriggerReadConfirmationActivityInspector.js",
+				"ui/workflows/registerCustomElements.js"
+			],
+			"styles": [
+				"ui/workflows/customElements.css"
+			],
+			"messages": [
+				"page-read-confirmations-automation-action-trigger",
+				"page-read-confirmations-inspector-activity-trigger-revision",
+				"page-read-confirmations-inspector-activity-trigger-revision-placeholder",
+				"page-read-confirmations-inspector-activity-trigger-pagename",
+				"page-read-confirmations-inspector-activity-trigger-audience-users",
+				"page-read-confirmations-inspector-activity-trigger-audience-groups"
+			],
+			"dependencies": [
+				"ext.workflows.editor.inspector.bootstrap",
+				"ext.workflows.editor.customElements.bootstrap"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "PageReadConfirmations/resources"
+	},
+	"Hooks": {
+		"LoadExtensionSchemaUpdates": "runDatabaseUpdates",
+		"StandardDialogsRegisterPageInfoPanelModules": "setupPageInfoPanelModule",
+		"SkinTemplateNavigation::Universal": "addContentAction",
+		"BeforePageDisplay": "addContentAction",
+		"BlueSpiceDiscoveryTemplateDataProviderAfterInit": "integrateDiscoverySkin"
+	},
+	"HookHandlers": {
+		"runDatabaseUpdates": {
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Hook\\RunDatabaseUpdates"
+		},
+		"setupPageInfoPanelModule": {
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\SetupPageInfoPanelModule"
+		},
+		"addContentAction": {
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Hook\\AddContentAction"
+		},
+		"integrateDiscoverySkin": {
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\DiscoverySkin"
+		}
+	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"RestRoutes": [
+		{
+			"path": "/page_read_confirmations/assignments/{page}",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\GetAssignmentsHandler",
+			"services": [ "TitleFactory", "PageReadConfirmations.AssignmentStore", "PermissionManager" ]
+		},
+		{
+			"path": "/page_read_confirmations/set_confirmations",
+			"method": "POST",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\SetConfirmationsHandler",
+			"services": [ "RevisionLookup", "PageReadConfirmations.Manager", "TitleFactory" ]
+		},
+		{
+			"path": "/page_read_confirmations/confirm",
+			"method": "POST",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\ConfirmationHandler",
+			"services": [ "PageReadConfirmations.Manager", "RevisionLookup" ]
+		},
+		{
+			"path": "/page_read_confirmations/remove_confirmation",
+			"method": "POST",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\RemoveConfirmationHandler",
+			"services": [ "PageReadConfirmations.Manager", "TitleFactory", "UserFactory" ]
+		},
+		{
+			"path": "/page_read_confirmations/request_info/{page}",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\GetRequestInfoHandler",
+			"services": [ "PageReadConfirmations.Manager", "TitleFactory", "PermissionManager" ]
+		},
+		{
+			"path": "/page_read_confirmations/cancel_request",
+			"method": "POST",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\CancelRequestHandler",
+			"services": [ "PageReadConfirmations.Manager", "TitleFactory" ]
+		},
+		{
+			"path": "/page_read_confirmations/remind",
+			"method": "POST",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\ReminderHandler",
+			"services": [ "PageReadConfirmations.Manager", "TitleFactory" ]
+		},
+		{
+			"path": "/page_read_confirmations/{page}",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\ConfirmationStore",
+			"services": [
+				"HookContainer", "TitleFactory", "PageReadConfirmations.Manager",
+				"PermissionManager", "ContentLanguage", "LinkRenderer", "RevisionLookup"
+			]
+		}
+	],
+	"LogTypes": [ "ext-page-read-confirmations" ],
+	"LogActionsHandlers": {
+		"ext-page-read-confirmations/*": "LogFormatter"
+	},
+	"manifest_version": 2,
+	"load_composer_autoloader": true
+}

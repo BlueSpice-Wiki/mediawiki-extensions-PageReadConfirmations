@@ -1,0 +1,48 @@
+[
+	{
+		"name": "page_read_confirmations_assignments",
+		"columns": [
+			{
+				"name": "prca_key",
+				"type": "string",
+				"options": {
+					"length": 255,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prca_type",
+				"type": "string",
+				"options": {
+					"length": 255,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prca_page",
+				"type": "integer",
+				"options": {
+					"unsigned": true,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prca_timestamp",
+				"type": "mwtimestamp",
+				"options": {
+					"notnull": true
+				}
+			},
+			{
+				"name": "prca_wiki_id",
+				"type": "string",
+				"options": {
+					"length": 255,
+					"notnull": true
+				}
+			}
+		],
+		"indexes": [],
+		"pk": [ "prca_page", "prca_key", "prca_type", "prca_wiki_id" ]
+	}
+]

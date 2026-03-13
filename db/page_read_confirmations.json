@@ -1,0 +1,48 @@
+[
+	{
+		"name": "page_read_confirmations",
+		"columns": [
+			{
+				"name": "prc_user",
+				"type": "integer",
+				"options": {
+					"unsigned": true,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prc_page",
+				"type": "integer",
+				"options": {
+					"unsigned": true,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prc_rev",
+				"type": "integer",
+				"options": {
+					"unsigned": true,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prc_read_at",
+				"type": "mwtimestamp",
+				"options": {
+					"notnull": false
+				}
+			},
+			{
+				"name": "prc_wiki_id",
+				"type": "string",
+				"options": {
+					"length": 255,
+					"notnull": true
+				}
+			}
+		],
+		"indexes": [],
+		"pk": [ "prc_user", "prc_rev", "prc_wiki_id" ]
+	}
+]

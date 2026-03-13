@@ -1,0 +1,40 @@
+[
+	{
+		"name": "page_read_confirmations_requests",
+		"columns": [
+			{
+				"name": "prcr_revision",
+				"type": "integer",
+				"options": {
+					"unsigned": true,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prcr_page",
+				"type": "integer",
+				"options": {
+					"unsigned": true,
+					"notnull": true
+				}
+			},
+			{
+				"name": "prcr_timestamp",
+				"type": "mwtimestamp",
+				"options": {
+					"notnull": false
+				}
+			},
+			{
+				"name": "prcr_wiki_id",
+				"type": "string",
+				"options": {
+					"length": 255,
+					"notnull": true
+				}
+			}
+		],
+		"indexes": [],
+		"pk": [ "prcr_revision", "prcr_page", "prcr_wiki_id" ]
+	}
+]
