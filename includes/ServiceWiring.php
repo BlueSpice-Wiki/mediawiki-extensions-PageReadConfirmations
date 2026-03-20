@@ -18,7 +18,8 @@ return [
 		return new ReadConfirmationAssignmentStore(
 			$services->getDBLoadBalancer(),
 			$services->getUserGroupManager(),
-			$services->getUserFactory()
+			$services->getUserFactory(),
+			$services->getPermissionManager()
 		);
 	},
 	'PageReadConfirmations.Manager' => static function ( MediaWikiServices $services ) {

@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\PageReadConfirmations\Store;
 
 use MediaWiki\Page\PageIdentity;
+use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
@@ -16,16 +17,18 @@ class ReadConfirmationAssignmentStore {
 	 * @param ILoadBalancer $lb
 	 * @param UserGroupManager $userGroupManager
 	 * @param UserFactory $userFactory
+	 * @param PermissionManager $permissionManager
 	 */
 	public function __construct(
 		private readonly ILoadBalancer $lb,
 		private readonly UserGroupManager $userGroupManager,
-		private readonly UserFactory $userFactory
+		private readonly UserFactory $userFactory,
+		private readonly PermissionManager $permissionManager
 	) {
 	}
 
 	public function isAssigned( UserIdentity $user, PageIdentity $page ): bool {
-		if ( !$user->isRegistered() || !$page->getId() ) {
+		if ( !$this->isValidAssignee( $user, $page ) || !$page->getId() ) {
 			return false;
 		}
 		$db = $this->lb->getConnection( DB_REPLICA );
@@ -76,12 +79,12 @@ class ReadConfirmationAssignmentStore {
 		$assignees = [];
 		foreach ( $raw as $row ) {
 			if ( $row->prca_type === 'user' ) {
-				$user = $this->getValidatedUser( $row->prca_key );
-				if ( $user ) {
+				$user = $this->userFactory->newFromName( $row->prca_key );
+				if ( $user && $this->isValidAssignee( $user, $page ) ) {
 					$assignees[$user->getId()] = $user;
 				}
 			} elseif ( $row->prca_type === 'group' ) {
-				foreach ( $this->resolveGroup( $row->prca_key ) as $user ) {
+				foreach ( $this->resolveGroup( $row->prca_key, $page ) as $user ) {
 					$assignees[$user->getId()] = $user;
 				}
 			}
@@ -290,38 +293,46 @@ class ReadConfirmationAssignmentStore {
 	}
 
 	/**
-	 * @param string $userName
-	 * @return User|null
-	 */
-	private function getValidatedUser( string $userName ): ?User {
-		$user = $this->userFactory->newFromName( $userName );
-		if ( !$user || !$user->isRegistered() || $user->isSystemUser() ) {
-			return null;
-		}
-		return $user;
-	}
-
-	/**
 	 * @param string $groupName
+	 * @param PageIdentity $page
 	 * @return UserIdentity[]
 	 */
-	private function resolveGroup( string $groupName ): array {
-		$membersRes = $this->lb->getConnection( DB_REPLICA )->newSelectQueryBuilder()
-			->select( [ 'ug_user', 'user_name' ] )
-			->from( 'user_groups', 'ug' )
-			->from( 'user', 'u' )
-			->where( [ 'ug_group' => $groupName ] )
-			->join( 'user', 'u', [ 'user_id = ug_user' ] )
-			->caller( __METHOD__ )
-			->fetchResultSet();
+	private function resolveGroup( string $groupName, PageIdentity $page ): array {
+		$membersQuery = $this->lb->getConnection( DB_REPLICA )->newSelectQueryBuilder()
+			->select( [ 'user_id', 'user_name' ] )
+			->from( 'user' )
+			->caller( __METHOD__ );
+		if ( $groupName !== 'user' ) {
+			$membersQuery = $membersQuery
+				->from( 'user_groups', 'ug' )
+				->where( [ 'ug_group' => $groupName ] )
+				->join( 'user', 'u', [ 'user_id = ug_user' ] );
+		}
+		$membersRes = $membersQuery->fetchResultSet();
 
 		$members = [];
 		foreach ( $membersRes as $memberRow ) {
-			$user = $this->getValidatedUser( $memberRow->user_name );
-			if ( $user ) {
+			$user = $this->userFactory->newFromName( $memberRow->user_name );
+			if ( $user && $this->isValidAssignee( $user, $page ) ) {
 				$members[] = $user;
 			}
 		}
 		return $members;
+	}
+
+	/**
+	 * @param UserIdentity $user
+	 * @param PageIdentity $page
+	 * @return bool
+	 */
+	private function isValidAssignee( UserIdentity $user, PageIdentity $page ): bool {
+		if ( !( $user instanceof User ) ) {
+			$user = $this->userFactory->newFromUserIdentity( $user );
+		}
+		if ( !$user->isRegistered() || $user->isSystemUser() || $user->getBlock() ) {
+			return false;
+		}
+		// Check if the user has read access to the page
+		return $this->permissionManager->quickUserCan( 'read', $user, $page );
 	}
 }

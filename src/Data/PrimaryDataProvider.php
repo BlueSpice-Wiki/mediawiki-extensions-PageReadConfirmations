@@ -32,6 +32,9 @@ class PrimaryDataProvider implements IPrimaryDataProvider {
 		$latestMustRead = $this->confirmationManager->getRequestedRevisionId( $this->forPage );
 		$latestMustReadRevision = $latestMustRead ? $this->revisionLookup->getRevisionById( $latestMustRead ) : null;
 
+		// Performance note: This will create user object, check their permissions and retrieve confirmations for them
+		// This is needed for filtering - even though it is not ideal to do it in PDP, for 2000 assignees takes ~3s
+		// If we want to get rid of ability to filter, we can bring down to negligible time
 		$data = [];
 		foreach ( $assignees as $assignee ) {
 			// Confirmation for this requested revision
@@ -60,6 +63,7 @@ class PrimaryDataProvider implements IPrimaryDataProvider {
 			];
 			$data[] = new Record( (object)$rowData );
 		}
+
 		return $data;
 	}
 }

@@ -8,7 +8,8 @@ ext.pageReadConfirmations.ui.AssignmentPanel = function ( config ) {
 		$overlay: config.dialog.$overlay
 	} );
 	this.groupPicker = new OOJSPlus.ui.widget.GroupMultiSelectWidget( {
-		$overlay: config.dialog.$overlay
+		$overlay: config.dialog.$overlay,
+		allowEveryoneOption: true
 	} );
 
 	this.$element.append(

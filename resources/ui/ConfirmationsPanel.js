@@ -55,7 +55,8 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 	this.addActionHeading();
 
 	this.confirmationStore = new OOJSPlus.ui.data.store.RemoteRestStore( {
-		path: 'page_read_confirmations/' + mw.config.get( 'wgArticleId' )
+		path: 'page_read_confirmations/' + mw.config.get( 'wgArticleId' ),
+		pageSize: 20
 	} );
 	this.confirmationStore.connect( this, {
 		reload: 'onReload'
@@ -92,6 +93,11 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 			}
 		}
 	} );
+	this.grid.connect( this, {
+		datasetChange: function () {
+			this.dialog.updateSize();
+		}
+	} );
 	this.$element.append( this.grid.$element );
 };
 
@@ -99,7 +105,6 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.setRequestInfo = async fu
 	const requestInfo = await ext.pageReadConfirmations.api.getRequestInfo( mw.config.get( 'wgArticleId' ) );
 	this.pendingCount = 0;
 	if ( requestInfo ) {
-		console.log( requestInfo );
 		const message = mw.msg( 'page-read-confirmations-request-info', requestInfo.version_link.anchor );
 		this.versionLabel.setLabel( new OO.ui.HtmlSnippet( message ) );
 		this.pendingCount = requestInfo.pending;
