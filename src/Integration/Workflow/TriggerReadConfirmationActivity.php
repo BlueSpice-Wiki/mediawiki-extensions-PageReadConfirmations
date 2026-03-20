@@ -51,6 +51,11 @@ class TriggerReadConfirmationActivity extends GenericActivity {
 			);
 		}
 
+		$shouldTrigger = $data['should_trigger'] !== '0';
+		if ( !$shouldTrigger ) {
+			return new ExecutionStatus( static::STATUS_COMPLETE, [ 'skipped' => true ] );
+		}
+
 		try {
 			$this->automaticAssigner->assignFromData( $title, $data );
 			return new ExecutionStatus( static::STATUS_COMPLETE, $data );
