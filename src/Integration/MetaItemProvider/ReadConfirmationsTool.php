@@ -71,22 +71,14 @@ class ReadConfirmationsTool extends Literal {
 	 */
 	public function getHtml(): string {
 		if ( $this->mustReadThisRevision ) {
-			// We are on the right revision
-			if ( $this->readAt ) {
-				// Already read
-				return \Html::element( 'span', [
-					'class' => 'page-read-confirmations-confirmed-label'
-				], Message::newFromKey( 'page-read-assignments-has-confirmed-label' )->text() );
-			} else {
-				// Must confirm
-				return ( new ButtonWidget( [
-					'label' => Message::newFromKey( 'page-read-assignments-do-confirm-label' )->text(),
-					'icon' => 'add',
-					'flags' => [ 'progressive' ],
-					'framed' => false,
-					'classes' => [ 'page-read-confirmations-confirm-button' ],
-				] ) )->toString();
-			}
+			// Must confirm
+			return ( new ButtonWidget( [
+				'label' => Message::newFromKey( 'page-read-assignments-do-confirm-label' )->text(),
+				'icon' => 'add',
+				'flags' => [ 'progressive' ],
+				'framed' => false,
+				'classes' => [ 'page-read-confirmations-confirm-button' ],
+			] ) )->toString();
 		} elseif ( $this->mustReadAnother ) {
 			$message = Message::newFromKey( 'page-read-assignments-has-another-request-label' )
 				->params(
@@ -97,12 +89,11 @@ class ReadConfirmationsTool extends Literal {
 			return \Html::rawElement( 'span', [
 				'class' => 'page-read-confirmations-requested-another-label'
 			], $message );
-		}
-
-		if ( $this->mustReadThisRevision && !$this->readAt ) {
-
 		} elseif ( $this->readAt ) {
-
+			// Already read
+			return \Html::element( 'span', [
+				'class' => 'page-read-confirmations-confirmed-label'
+			], Message::newFromKey( 'page-read-assignments-has-confirmed-label' )->text() );
 		}
 		return '';
 	}
