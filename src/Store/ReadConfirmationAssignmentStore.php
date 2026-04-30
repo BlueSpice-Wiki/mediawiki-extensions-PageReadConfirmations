@@ -306,7 +306,7 @@ class ReadConfirmationAssignmentStore {
 			$membersQuery = $membersQuery
 				->from( 'user_groups', 'ug' )
 				->where( [ 'ug_group' => $groupName ] )
-				->join( 'user', 'u', [ 'user_id = ug_user' ] );
+				->join( 'user_groups', 'ug', [ 'user_id = ug_user' ] );
 		}
 		$membersRes = $membersQuery->fetchResultSet();
 

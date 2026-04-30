@@ -17,7 +17,8 @@ ext.pageReadConfirmations.ui.AssignmentDialog.static.actions = [
 	},
 	{
 		action: 'cancel',
-		label: mw.msg( 'page-read-confirmations-action-cancel' ),
+		icon: 'close',
+		title: mw.msg( 'page-read-confirmations-action-cancel' ),
 		flags: [ 'safe', 'close' ]
 	}
 ];

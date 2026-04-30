@@ -3,31 +3,27 @@ ext.pageReadConfirmations.ui.AssignmentPanel = function ( config ) {
 		padded: false,
 		expanded: false
 	}, config ) );
+	this.dialog = config.dialog;
 
-	this.userPicker = new OOJSPlus.ui.widget.UsersMultiselectWidget( {
-		$overlay: config.dialog.$overlay
-	} );
-	this.groupPicker = new OOJSPlus.ui.widget.GroupMultiSelectWidget( {
+	this.userGroupPicker = new OOJSPlus.ui.widget.UserGroupMultiselectWidget( {
 		$overlay: config.dialog.$overlay,
-		allowEveryoneOption: true
+		allowEveryone: true,
+		placeholder: mw.msg( 'page-read-confirmations-assign-placeholder' )
+	} );
+	this.userGroupPicker.connect( this, {
+		change: () => {
+			this.dialog.updateSize();
+		}
 	} );
 
 	this.$element.append(
-		new OO.ui.LabelWidget( {
-			label: mw.msg( 'page-read-confirmations-assign-instruction' )
-		} ).$element,
-		new OO.ui.FieldLayout( this.userPicker, {
-			label: mw.msg( 'page-read-confirmations-assign-users' ),
+		new OO.ui.FieldLayout( this.userGroupPicker, {
+			label: mw.msg( 'page-read-confirmations-assign-instruction' ),
 			align: 'top'
 		} ).$element,
-		new OO.ui.FieldLayout( this.groupPicker, {
-			label: mw.msg( 'page-read-confirmations-assign-groups' ),
-			align: 'top'
-		} ).$element
 	);
 
-	this.userPicker.setDisabled( true );
-	this.groupPicker.setDisabled( true );
+	this.userGroupPicker.setDisabled( true );
 	this.loadValues();
 };
 
@@ -45,10 +41,13 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 				groups.push( assignment.key );
 			}
 		}
-		this.userPicker.setValue( users );
-		this.groupPicker.setValue( groups );
-		this.userPicker.setDisabled( false );
-		this.groupPicker.setDisabled( false );
+
+		const values = [];
+		users.forEach( user => values.push( { key: user, type: 'user' } ) );
+		groups.forEach( group => values.push( { key: group, type: 'group' } ) );
+		this.userGroupPicker.setValue( values );
+		this.userGroupPicker.setDisabled( false );
+		this.dialog.updateSize();
 		this.emit( 'loaded' );
 	} catch ( e ) {
 		this.emit( 'error' );
@@ -60,21 +59,5 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 };
 
 ext.pageReadConfirmations.ui.AssignmentPanel.prototype.getValue = function () {
-	const users = this.userPicker.getValue();
-	const groups = this.groupPicker.getValue();
-
-	const assignments = [];
-	for ( const user of users ) {
-		assignments.push( {
-			type: 'user',
-			key: user
-		} );
-	}
-	for ( const group of groups ) {
-		assignments.push( {
-			type: 'group',
-			key: group
-		} );
-	}
-	return assignments;
+	return this.userGroupPicker.getValue();
 }

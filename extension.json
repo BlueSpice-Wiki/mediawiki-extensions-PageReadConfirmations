@@ -10,7 +10,7 @@
 	"requires": {
 		"MediaWiki": ">= 1.43.0",
 		"extensions": {
-			"OOJSPlus": "*",
+			"OOJSPlus": ">= 3.1.0",
 			"StandardDialogs": "*"
 		}
 	},
@@ -134,8 +134,7 @@
 			"messages": [
 				"page-read-confirmations-error",
 				"page-read-confirmations-assign-instruction",
-				"page-read-confirmations-assign-users",
-				"page-read-confirmations-assign-groups",
+				"page-read-confirmations-assign-placeholder",
 				"page-read-confirmations-assignment-dialog-title",
 				"page-read-confirmations-action-assign"
 			]

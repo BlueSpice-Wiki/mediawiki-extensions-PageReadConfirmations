@@ -32,17 +32,15 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 		$spec = new StandaloneFormSpecification();
 		$spec->setItems( [
 			[
-				'type' => 'text',
+				'type' => 'user_group_multiselect',
 				'name' => 'audience_users',
 				'label' => Message::newFromKey(
-					'page-read-confirmations-inspector-activity-trigger-audience-users'
+					'page-read-confirmations-inspector-activity-trigger-audience-header'
 				)->text(),
-			],
-			[
-				'type' => 'text',
-				'name' => 'audience_groups',
-				'label' => Message::newFromKey(
-					'page-read-confirmations-inspector-activity-trigger-audience-groups'
+				'labelAlign' => 'top',
+				'widget_$overlay' => true,
+				'widget_placeholder' => Message::newFromKey(
+					'page-read-confirmations-assign-placeholder'
 				)->text(),
 			],
 		] );
