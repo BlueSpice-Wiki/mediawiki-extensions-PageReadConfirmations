@@ -157,6 +157,7 @@
 				"page-read-confirmations-inspector-activity-trigger-audience-groups"
 			],
 			"dependencies": [
+				"ext.pageReadConfirmations.bootstrap",
 				"ext.workflows.editor.inspector.bootstrap",
 				"ext.workflows.editor.customElements.bootstrap"
 			]
