@@ -171,7 +171,12 @@
 		"StandardDialogsRegisterPageInfoPanelModules": "setupPageInfoPanelModule",
 		"SkinTemplateNavigation::Universal": "addContentAction",
 		"BeforePageDisplay": "addContentAction",
-		"BlueSpiceDiscoveryTemplateDataProviderAfterInit": "integrateDiscoverySkin"
+		"BlueSpiceDiscoveryTemplateDataProviderAfterInit": "integrateDiscoverySkin",
+		"PageReadConfirmationConfirmed": "updateNeoWikiProperties",
+		"PageReadConfirmationAssignmentsChanged": "updateNeoWikiProperties",
+		"PageReadConfirmationRequested": "updateNeoWikiProperties",
+		"NeoWikiRegistration": "updateNeoWikiProperties"
+
 	},
 	"HookHandlers": {
 		"runDatabaseUpdates": {
@@ -185,6 +190,10 @@
 		},
 		"integrateDiscoverySkin": {
 			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\DiscoverySkin"
+		},
+		"updateNeoWikiProperties": {
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\NeoWikiPropertiesUpdater",
+			"services": [ "PageReadConfirmations.Manager", "TitleFactory", "RevisionLookup" ]
 		}
 	},
 	"ServiceWiringFiles": [
