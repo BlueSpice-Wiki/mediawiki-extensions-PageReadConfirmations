@@ -18,12 +18,14 @@ class ReadConfirmationAssignmentStore {
 	 * @param UserGroupManager $userGroupManager
 	 * @param UserFactory $userFactory
 	 * @param PermissionManager $permissionManager
+	 * @param \Config $config
 	 */
 	public function __construct(
 		private readonly ILoadBalancer $lb,
 		private readonly UserGroupManager $userGroupManager,
 		private readonly UserFactory $userFactory,
-		private readonly PermissionManager $permissionManager
+		private readonly PermissionManager $permissionManager,
+		private readonly \Config $config
 	) {
 	}
 
@@ -329,7 +331,16 @@ class ReadConfirmationAssignmentStore {
 		if ( !( $user instanceof User ) ) {
 			$user = $this->userFactory->newFromUserIdentity( $user );
 		}
+		$reservedUsernames = $this->config->get( 'ReservedUsernames' ) ?? [];
+		if ( in_array( $user->getName(), $reservedUsernames ) ) {
+			return false;
+		}
 		if ( !$user->isRegistered() || $user->isSystemUser() || $user->getBlock() ) {
+			return false;
+		}
+		if ( $user->getToken() !== $user->getToken() ) {
+			// Some system users are not actually system users, but if token changes from call to call,
+			// its not a real user
 			return false;
 		}
 		// Check if the user has read access to the page

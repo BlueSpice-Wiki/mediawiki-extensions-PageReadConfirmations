@@ -154,8 +154,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.addActionHeading = functi
 					this.onEditAssignmentsClick();
 				}
 				if ( item.getData() === 'cancelRequest' ) {
-					this.onCancelRequestClick();
-					item.setDisabled( true );
+					this.onCancelRequestClick( item );
 				}
 			}
 		} );
@@ -239,7 +238,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onEditAssignmentsClick = 
 	} );
 };
 
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = async function () {
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = async function ( item ) {
 	OO.ui.confirm(
 		mw.msg( 'page-read-confirmations-confirm-cancel-request' ), {
 			actions: [
@@ -263,7 +262,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = as
 				if ( !res.success ) {
 					throw new Error( 'API error' );
 				}
-				this.grid.getStore().reload();
+				this.grid.store.reload();
 			} catch ( e ) {
 				OO.ui.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
 			}

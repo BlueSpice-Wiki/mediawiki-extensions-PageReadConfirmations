@@ -19,7 +19,8 @@ return [
 			$services->getDBLoadBalancer(),
 			$services->getUserGroupManager(),
 			$services->getUserFactory(),
-			$services->getPermissionManager()
+			$services->getPermissionManager(),
+			$services->getMainConfig()
 		);
 	},
 	'PageReadConfirmations.Manager' => static function ( MediaWikiServices $services ) {
