@@ -117,7 +117,11 @@
 				"page-read-confirmations-confirm-remind-request",
 				"page-read-confirmations-reminder-sent",
 				"page-read-confirmations-old-revision-warning-title",
-				"page-read-confirmations-old-revision-warning-body"
+				"page-read-confirmations-old-revision-warning-body",
+				"page-read-confirmations-request-confirmation-button",
+				"page-read-confirmations-request-confirmation-button-title",
+				"page-read-confirmations-confirm-request",
+				"page-read-confirmations-action-request"
 			],
 			"styles": [
 				"styles.less"
@@ -239,6 +243,12 @@
 			"method": "POST",
 			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\ReminderHandler",
 			"services": [ "PageReadConfirmations.Manager", "TitleFactory" ]
+		},
+		{
+			"path": "/page_read_confirmations/request/{page}",
+			"method": "POST",
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Rest\\RequestConfirmationHandler",
+			"services": [ "RevisionLookup", "PageReadConfirmations.Manager", "TitleFactory" ]
 		},
 		{
 			"path": "/page_read_confirmations/{page}",

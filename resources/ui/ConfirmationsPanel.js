@@ -2,6 +2,7 @@ ext.pageReadConfirmations.ConfirmationsPanel = function( name, config ) {
 	this.grid = null;
 	this.dialog = config.dialog;
 	this.pendingCount = 0;
+	this.isOnLatestRev = mw.config.get( 'wgCurRevisionId' ) === mw.config.get( 'wgRevisionId' );
 	ext.pageReadConfirmations.ConfirmationsPanel.super.call( this, name, config );
 };
 
@@ -48,7 +49,20 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 	} );
 	this.oldRevisionWarning.$element.css( 'margin-left', '4px' );
 	this.oldRevisionWarning.$element.hide();
-	this.$element.append( this.versionLabel.$element, this.oldRevisionWarning.$element );
+
+	this.requestButton = new OO.ui.ButtonWidget( {
+		label: mw.msg( 'page-read-confirmations-request-confirmation-button' ),
+		flags: [ 'primary', 'progressive' ],
+		title: mw.msg( 'page-read-confirmations-request-confirmation-button-title' ),
+		framed: false,
+		classes: [ 'page-read-confirmations-request-confirmation-button' ]
+	} );
+	this.requestButton.connect( this, {
+		click: 'onRequestConfirmationClick'
+	} );
+	this.requestButton.$element.hide();
+
+	this.$element.append( this.versionLabel.$element, this.oldRevisionWarning.$element, this.requestButton.$element );
 	await this.setRequestInfo();
 	this.$actionHeadingCnt = $( '<div>' );
 	this.$element.append( this.$actionHeadingCnt );
@@ -113,8 +127,12 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.setRequestInfo = async fu
 		} else {
 			this.oldRevisionWarning.$element.show();
 		}
+		this.requestButton.$element.hide();
 	} else {
 		this.versionLabel.setLabel( mw.msg( 'page-read-confirmations-no-request-info' ) );
+		if ( this.isOnLatestRev ) {
+			this.requestButton.$element.show();
+		}
 	}
 };
 
@@ -267,6 +285,39 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = as
 				OO.ui.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
 			}
 		} );
+};
+
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.onRequestConfirmationClick = async function () {
+	OO.ui.confirm(
+		mw.msg( 'page-read-confirmations-confirm-request' ), {
+			actions: [
+				{
+					label: mw.msg( 'page-read-confirmations-action-request' ),
+					flags: [ 'progressive' ],
+					action: 'accept'
+				},
+				{
+					label: mw.msg( 'page-read-confirmations-action-cancel' ),
+					action: 'cancel'
+				}
+			],
+			size: 'large'
+		} )
+		.done( async ( confirmed ) => {
+			if ( !confirmed ) {
+				return;
+			}
+			try {
+				const res = await ext.pageReadConfirmations.api.requestConfirmation( mw.config.get( 'wgArticleId' ) );
+				if ( !res.success ) {
+					throw new Error( 'API error' );
+				}
+				this.grid.store.reload();
+			} catch ( e ) {
+				OO.ui.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
+			}
+		} );
+
 };
 
 if ( ext.pageReadConfirmations._currentPageSupported() ) {

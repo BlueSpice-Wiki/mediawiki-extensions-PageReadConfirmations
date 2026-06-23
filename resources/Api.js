@@ -33,6 +33,9 @@ ext.pageReadConfirmations.api =  {
 			page: page
 		}, 'POST' );
 	},
+	requestConfirmation: async( pageId ) => {
+		return ext.pageReadConfirmations.api._ajax( '/request/' + pageId, {}, 'POST' );
+	},
 	_ajax: async ( path, params, method ) => {
 		const base = mw.util.wikiScript( 'rest' ) + '/page_read_confirmations';
 		let url = base + path;

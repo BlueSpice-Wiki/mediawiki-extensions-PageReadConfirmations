@@ -65,5 +65,9 @@
 	"page-read-confirmations-confirm-remind-request": "Confirmation dialog message shown before sending reminders to users who have not yet confirmed reading.",
 	"page-read-confirmations-reminder-sent": "Success notification shown after reminders have been sent successfully.",
 	"page-read-confirmations-inspector-activity-trigger-audience-users": "Field label for selecting individual users as the audience for triggering read confirmation requests in the workflow activity inspector.",
-	"page-read-confirmations-inspector-activity-trigger-audience-groups": "Field label for selecting user groups as the audience for triggering read confirmation requests in the workflow activity inspector."
+	"page-read-confirmations-inspector-activity-trigger-audience-groups": "Field label for selecting user groups as the audience for triggering read confirmation requests in the workflow activity inspector.",
+	"page-read-confirmations-request-confirmation-button": "Label for the button to manually request read confirmations for a page.",
+	"page-read-confirmations-request-confirmation-button-title": "Help text for the button to manually request read confirmations for a page.",
+	"page-read-confirmations-confirm-request": "Confirmation message shown before sending read confirmation requests to users who have not yet confirmed reading.",
+	"page-read-confirmations-action-request": "Label for the action button to request read confirmations for a page."
 }

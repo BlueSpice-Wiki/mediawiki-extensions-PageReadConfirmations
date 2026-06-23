@@ -68,5 +68,9 @@
 	"page-read-confirmations-inspector-activity-trigger-audience-groups": "Request from groups",
 	"page-read-assignments-has-another-request-label": "You are requested to confirm reading [{{fullurl:$1|oldid=$2}} another version] of this page",
 	"page-read-confirmations-old-revision-warning-title": "Not latest version",
-	"page-read-confirmations-old-revision-warning-body": "Confirmation is requested for an older version of this page."
+	"page-read-confirmations-old-revision-warning-body": "Confirmation is requested for an older version of this page.",
+	"page-read-confirmations-request-confirmation-button": "Request confirmation",
+	"page-read-confirmations-request-confirmation-button-title": "Request read confirmation for the current version of the page. Only assigned users who have not yet confirmed reading will be requested to confirm reading the page.",
+	"page-read-confirmations-confirm-request": "Are you sure you want to request read confirmation for this version of the page? Only assigned users who have not yet confirmed reading will be requested to confirm reading the page.",
+	"page-read-confirmations-action-request": "Request"
 }
