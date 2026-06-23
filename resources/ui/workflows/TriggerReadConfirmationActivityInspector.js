@@ -37,8 +37,7 @@ ext.pageReadConfirmations.ui.workflows.TriggerReadConfirmationActivityInspector.
 				type: 'text',
 				name: 'properties.revision',
 				label: mw.msg( 'page-read-confirmations-inspector-activity-trigger-revision' ),
-				help: mw.msg( 'page-read-confirmations-inspector-activity-trigger-revision-help' ),
-				required: true
+				required: false
 			},
 			{
 				type: 'text',

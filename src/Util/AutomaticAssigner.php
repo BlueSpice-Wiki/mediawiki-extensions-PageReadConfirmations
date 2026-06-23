@@ -31,7 +31,7 @@ readonly class AutomaticAssigner {
 	 * @throws Exception
 	 */
 	public function assignFromData( Title $title, array $data ): void {
-		$revId = $data['revision'] ?? $title->getLatestRevID();
+		$revId = !empty( $data['revision'] ) ? $data['revision'] : $title->getLatestRevID();
 		$revision = $this->revisionLookup->getRevisionById( $revId );
 		if ( !$revision ) {
 			throw new Exception(
