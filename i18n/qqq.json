@@ -69,5 +69,6 @@
 	"page-read-confirmations-request-confirmation-button": "Label for the button to manually request read confirmations for a page.",
 	"page-read-confirmations-request-confirmation-button-title": "Help text for the button to manually request read confirmations for a page.",
 	"page-read-confirmations-confirm-request": "Confirmation message shown before sending read confirmation requests to users who have not yet confirmed reading.",
-	"page-read-confirmations-action-request": "Label for the action button to request read confirmations for a page."
+	"page-read-confirmations-action-request": "Label for the action button to request read confirmations for a page.",
+	"page-read-confirmations-uto-task-header": "Sub-header shown on the Unified Task Overview tile for pending read confirmations."
 }

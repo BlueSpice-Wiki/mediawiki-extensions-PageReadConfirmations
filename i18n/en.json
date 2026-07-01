@@ -72,5 +72,6 @@
 	"page-read-confirmations-request-confirmation-button": "Request confirmation",
 	"page-read-confirmations-request-confirmation-button-title": "Request read confirmation for the current version of the page. Only assigned users who have not yet confirmed reading will be requested to confirm reading the page.",
 	"page-read-confirmations-confirm-request": "Are you sure you want to request read confirmation for this version of the page? Only assigned users who have not yet confirmed reading will be requested to confirm reading the page.",
-	"page-read-confirmations-action-request": "Request"
+	"page-read-confirmations-action-request": "Request",
+	"page-read-confirmations-uto-task-header": "Read confirmation required"
 }
