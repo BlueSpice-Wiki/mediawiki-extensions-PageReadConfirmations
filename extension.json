@@ -50,6 +50,11 @@
 				"ext.pageReadConfirmations.workflows.editor"
 			]
 		},
+		"UnifiedTaskOverview": {
+			"TaskDescriptorRegistry": {
+				"page-read-confirmation": "\\MediaWiki\\Extension\\PageReadConfirmations\\Integration\\UnifiedTaskOverview\\ReadConfirmationTaskDescriptor"
+			}
+		},
 		"NotifyMe": {
 			"Events": {
 				"page-read-confirmation-reminder": {
@@ -188,9 +193,9 @@
 		"SkinTemplateNavigation::Universal": "addContentAction",
 		"BeforePageDisplay": "addContentAction",
 		"BlueSpiceDiscoveryTemplateDataProviderAfterInit": "integrateDiscoverySkin",
-		"PageReadConfirmationConfirmed": "updateNeoWikiProperties",
+		"PageReadConfirmationConfirmed": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ],
 		"PageReadConfirmationAssignmentsChanged": "updateNeoWikiProperties",
-		"PageReadConfirmationRequested": "updateNeoWikiProperties",
+		"PageReadConfirmationRequested": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ],
 		"NeoWikiRegistration": "updateNeoWikiProperties"
 
 	},
@@ -210,6 +215,10 @@
 		"updateNeoWikiProperties": {
 			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\NeoWikiPropertiesUpdater",
 			"services": [ "PageReadConfirmations.Manager", "TitleFactory", "RevisionLookup" ]
+		},
+		"updateUnifiedTaskOverview": {
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\UpdateUnifiedTaskOverview",
+			"services": [ "PageReadConfirmations.Manager", "TitleFactory", "UserFactory" ]
 		}
 	},
 	"ServiceWiringFiles": [
