@@ -87,7 +87,7 @@
 				"page-read-confirmations-action-confirm"
 			]
 		},
-		"ext.pageReadConfirmations.confirmationsPanel": {
+		"ext.pageReadConfirmations.confirmationPanel": {
 			"scripts": [
 				"ui/ConfirmationsPanel.js"
 			],
@@ -127,20 +127,32 @@
 				"styles.less"
 			]
 		},
+		"ext.pageReadConfirmations.standardDialogs.confirmationPage": {
+			"scripts": [
+				"ui/AssignmentOnlyDialog.js",
+				"ui/ConfirmationsPage.js"
+			],
+			"dependencies": [
+				"ext.pageReadConfirmations.confirmationPanel"
+			]
+		},
 		"ext.pageReadConfirmations.assignments": {
 			"scripts": [
 				"ui/AssignmentPanel.js",
 				"ui/AssignmentDialog.js"
 			],
 			"dependencies": [
-				"ext.pageReadConfirmations.bootstrap"
+				"ext.pageReadConfirmations.bootstrap",
+				"ext.pageReadConfirmations.confirmationPanel"
 			],
 			"messages": [
 				"page-read-confirmations-error",
 				"page-read-confirmations-assign-instruction",
 				"page-read-confirmations-assign-placeholder",
 				"page-read-confirmations-assignment-dialog-title",
-				"page-read-confirmations-action-assign"
+				"page-read-confirmations-action-assign",
+				"page-read-confirmations-confirm-assign-dirty",
+				"page-read-confirmations-action-show-confirmations"
 			]
 		},
 		"ext.pageReadConfirmations.workflows.editor": {

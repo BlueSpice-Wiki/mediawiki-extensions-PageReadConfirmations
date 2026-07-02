@@ -67,6 +67,10 @@ class ReadConfirmationAssignmentStore {
 			->fetchRowCount() > 0;
 	}
 
+	/**
+	 * @param PageIdentity $page
+	 * @return array
+	 */
 	public function getAssignees( PageIdentity $page ): array {
 		$raw = $this->lb->getConnection( DB_REPLICA )->newSelectQueryBuilder()
 			->select( [ 'prca_key', 'prca_type', 'prca_wiki_id' ] )
@@ -78,20 +82,40 @@ class ReadConfirmationAssignmentStore {
 			->caller( __METHOD__ )
 			->fetchResultSet();
 
-		$assignees = [];
+		$assigneeArray = [];
 		foreach ( $raw as $row ) {
-			if ( $row->prca_type === 'user' ) {
-				$user = $this->userFactory->newFromName( $row->prca_key );
-				if ( $user && $this->isValidAssignee( $user, $page ) ) {
-					$assignees[$user->getId()] = $user;
-				}
-			} elseif ( $row->prca_type === 'group' ) {
-				foreach ( $this->resolveGroup( $row->prca_key, $page ) as $user ) {
+			$assigneeArray[] = [
+				'type' => $row->prca_type,
+				'key' => $row->prca_key,
+			];
+		}
+		$validAssignees = [];
+		$assignees = $this->resolveAssigneeArray( $assigneeArray );
+		foreach ( $assignees as $user ) {
+			if ( $this->isValidAssignee( $user, $page ) ) {
+				$validAssignees[] = $user;
+			}
+		}
+
+		return $validAssignees;
+	}
+
+	/**
+	 * @param array $assigneeArray
+	 * @return array
+	 */
+	public function resolveAssigneeArray( array $assigneeArray ): array {
+		$assignees = [];
+		foreach ( $assigneeArray as $row ) {
+			if ( $row['type'] === 'user' ) {
+				$user = $this->userFactory->newFromName( $row['key'] );
+				$assignees[$user->getId()] = $user;
+			} elseif ( $row['type'] === 'group' ) {
+				foreach ( $this->resolveGroup( $row['key'] ) as $user ) {
 					$assignees[$user->getId()] = $user;
 				}
 			}
 		}
-
 		return array_values( $assignees );
 	}
 
@@ -296,10 +320,9 @@ class ReadConfirmationAssignmentStore {
 
 	/**
 	 * @param string $groupName
-	 * @param PageIdentity $page
 	 * @return UserIdentity[]
 	 */
-	private function resolveGroup( string $groupName, PageIdentity $page ): array {
+	private function resolveGroup( string $groupName ): array {
 		$membersQuery = $this->lb->getConnection( DB_REPLICA )->newSelectQueryBuilder()
 			->select( [ 'user_id', 'user_name' ] )
 			->from( 'user' )
@@ -315,7 +338,7 @@ class ReadConfirmationAssignmentStore {
 		$members = [];
 		foreach ( $membersRes as $memberRow ) {
 			$user = $this->userFactory->newFromName( $memberRow->user_name );
-			if ( $user && $this->isValidAssignee( $user, $page ) ) {
+			if ( $user ) {
 				$members[] = $user;
 			}
 		}

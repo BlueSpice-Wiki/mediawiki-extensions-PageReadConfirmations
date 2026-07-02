@@ -4,6 +4,8 @@ ext.pageReadConfirmations.ui.AssignmentPanel = function ( config ) {
 		expanded: false
 	}, config ) );
 	this.dialog = config.dialog;
+	this.orignalValue = null;
+	this.loaded = false;
 
 	this.userGroupPicker = new OOJSPlus.ui.widget.UserGroupMultiselectWidget( {
 		$overlay: config.dialog.$overlay,
@@ -11,8 +13,21 @@ ext.pageReadConfirmations.ui.AssignmentPanel = function ( config ) {
 		placeholder: mw.msg( 'page-read-confirmations-assign-placeholder' )
 	} );
 	this.userGroupPicker.connect( this, {
+		valueSet: ( value ) => {
+			this.orignalValue = value;
+			this.emit( 'change', false );
+		},
 		change: () => {
 			this.dialog.updateSize();
+			if ( this.orignalValue === null ) {
+				return;
+			}
+
+			let dirty = false;
+			if ( JSON.stringify( this.getValue() ) !== JSON.stringify( this.orignalValue ) ) {
+				dirty = true;
+			}
+			this.emit( 'change', dirty );
 		}
 	} );
 
@@ -48,6 +63,8 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 		this.userGroupPicker.setValue( values );
 		this.userGroupPicker.setDisabled( false );
 		this.dialog.updateSize();
+		this.loaded = true;
+
 		this.emit( 'loaded' );
 	} catch ( e ) {
 		this.emit( 'error' );
@@ -60,4 +77,11 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 
 ext.pageReadConfirmations.ui.AssignmentPanel.prototype.getValue = function () {
 	return this.userGroupPicker.getValue();
-}
+};
+
+/**
+ * Happens when value is saved, becoming the new original value.
+ */
+ext.pageReadConfirmations.ui.AssignmentPanel.prototype.updateOriginalValue = function () {
+	this.orignalValue = this.getValue();
+};

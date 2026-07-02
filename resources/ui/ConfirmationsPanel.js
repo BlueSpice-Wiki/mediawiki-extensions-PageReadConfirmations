@@ -1,27 +1,46 @@
-ext.pageReadConfirmations.ConfirmationsPanel = function( name, config ) {
+ext.pageReadConfirmations.ConfirmationsPanel = function( config ) {
 	this.grid = null;
 	this.dialog = config.dialog;
+	this.windowManager = null;
+	this.allowEditing = typeof config.allowEditing === 'boolean' ? config.allowEditing : true;
 	this.pendingCount = 0;
 	this.isOnLatestRev = mw.config.get( 'wgCurRevisionId' ) === mw.config.get( 'wgRevisionId' );
-	ext.pageReadConfirmations.ConfirmationsPanel.super.call( this, name, config );
+	ext.pageReadConfirmations.ConfirmationsPanel.super.call( this, Object.assign( {
+		expanded: false,
+		padded: false
+	}, config ) );
 };
 
-OO.inheritClass( ext.pageReadConfirmations.ConfirmationsPanel, StandardDialogs.ui.BasePage );
+OO.inheritClass( ext.pageReadConfirmations.ConfirmationsPanel, OO.ui.PanelLayout );
 
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.setupOutlineItem = function () {
-	ext.pageReadConfirmations.ConfirmationsPanel.super.prototype.setupOutlineItem.apply( this, arguments );
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.setWindowManager = function ( windowManager ) {
+	this.windowManager = windowManager || null;
+};
 
-	if ( this.outlineItem ) {
-		this.outlineItem.setLabel( mw.message( 'page-read-confirmations-label' ).plain() );
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.confirm = function ( message, options ) {
+	if ( !this.windowManager ) {
+		return OO.ui.confirm( message, options );
 	}
+	return this.windowManager.openWindow( 'message', Object.assign( {
+		message: message
+	}, options ) ).closed.then( ( data ) => !!( data && data.action === 'accept' ) );
 };
 
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.setup = function () {
-	return;
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.alert = function ( message, options ) {
+	if ( !this.windowManager ) {
+		return OO.ui.alert( message, options );
+	}
+	return this.windowManager.openWindow( 'message', Object.assign( {
+		message: message,
+		actions: [ OO.ui.MessageDialog.static.actions[ 0 ] ]
+	}, options ) ).closed.then( () => undefined );
 };
 
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.onInfoPanelSelect = async function () {
-	this.dialog.setSize( 'larger' );
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.init = async function ( force ) {
+	if ( force ) {
+		this.$element.empty();
+		this.grid = null;
+	}
 	if ( !this.grid ) {
 		await this.initConfirmationPanel();
 	}
@@ -145,25 +164,32 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.addActionHeading = functi
 			framed: false
 		} );
 		this.sendReminderButton.connect( this, { click: 'onSendReminderClick' } );
+		const menuOptions = [];
+		if ( this.allowEditing ) {
+			menuOptions.push(
+				new OO.ui.MenuOptionWidget( {
+					icon: 'edit',
+					data: 'editAssignments',
+					label: mw.msg( 'page-read-confirmations-edit-assignments' )
+				} )
+			);
+		}
+		menuOptions.push(
+			new OO.ui.MenuOptionWidget( {
+				icon: 'trash',
+				data: 'cancelRequest',
+				label: mw.msg( 'page-read-confirmations-cancel-request' ),
+				flags: [ 'destructive' ]
+			} )
+		);
+
 		const additionalActionsButton = new OO.ui.ButtonMenuSelectWidget( {
 			icon: 'verticalEllipsis',
 			title: mw.msg( 'page-read-confirmations-more-actions' ),
 			framed: false,
 			$overlay: this.dialog.$overlay,
 			menu: {
-				items: [
-					new OO.ui.MenuOptionWidget( {
-						icon: 'edit',
-						data: 'editAssignments',
-						label: mw.msg( 'page-read-confirmations-edit-assignments' )
-					} ),
-					new OO.ui.MenuOptionWidget( {
-						icon: 'trash',
-						data: 'cancelRequest',
-						label: mw.msg( 'page-read-confirmations-cancel-request' ),
-						flags: [ 'destructive' ]
-					} )
-				]
+				items: menuOptions
 			}
 		} );
 		additionalActionsButton.getMenu().connect( this, {
@@ -180,7 +206,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.addActionHeading = functi
 			this.sendReminderButton,
 			additionalActionsButton
 		]
-	} else {
+	} else if ( this.allowEditing ) {
 		const editAssignmentsButton = new OO.ui.ButtonWidget( {
 			data: 'editAssignments',
 			label: mw.msg( 'page-read-confirmations-edit-assignments' ),
@@ -213,7 +239,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onReload = async function
 };
 
 ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = function () {
-	OO.ui.confirm(
+	this.confirm(
 		mw.msg( 'page-read-confirmations-confirm-remind-request' ), {
 			actions: [
 				{
@@ -239,7 +265,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = fun
 				mw.notify( mw.msg( 'page-read-confirmations-reminder-sent' ), { type: 'success' } );
 				this.sendReminderButton.setDisabled( true );
 			} catch ( e ) {
-				OO.ui.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
+				this.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
 			}
 		} );
 };
@@ -247,7 +273,9 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = fun
 ext.pageReadConfirmations.ConfirmationsPanel.prototype.onEditAssignmentsClick = async function () {
 	await mw.loader.using( [ 'ext.pageReadConfirmations.assignments' ] );
 	const wm = OO.ui.getWindowManager();
-	const dialog = new ext.pageReadConfirmations.ui.AssignmentDialog();
+	const dialog = new ext.pageReadConfirmations.ui.AssignmentOnlyDialog(
+		{ assignmentsOnly: true }
+	);
 	wm.addWindows( [ dialog ] );
 	wm.openWindow( dialog ).closed.then( ( data ) => {
 		if ( data && data.action === 'save' ) {
@@ -257,7 +285,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onEditAssignmentsClick = 
 };
 
 ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = async function ( item ) {
-	OO.ui.confirm(
+	this.confirm(
 		mw.msg( 'page-read-confirmations-confirm-cancel-request' ), {
 			actions: [
 				{
@@ -282,13 +310,13 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = as
 				}
 				this.grid.store.reload();
 			} catch ( e ) {
-				OO.ui.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
+				this.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
 			}
 		} );
 };
 
 ext.pageReadConfirmations.ConfirmationsPanel.prototype.onRequestConfirmationClick = async function () {
-	OO.ui.confirm(
+	this.confirm(
 		mw.msg( 'page-read-confirmations-confirm-request' ), {
 			actions: [
 				{
@@ -314,12 +342,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onRequestConfirmationClic
 				}
 				this.grid.store.reload();
 			} catch ( e ) {
-				OO.ui.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
+				this.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
 			}
 		} );
-
-};
-
-if ( ext.pageReadConfirmations._currentPageSupported() ) {
-	registryPageInformation.register( 'read_confirmations', ext.pageReadConfirmations.ConfirmationsPanel );
 }
