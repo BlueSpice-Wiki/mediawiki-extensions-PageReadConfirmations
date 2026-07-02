@@ -262,20 +262,25 @@ class ReadConfirmationManager {
 		}
 		$this->logger->logRequest( $actor->getUser(), $revisionToRead );
 		$this->hookContainer->run( 'PageReadConfirmationRequested', [ $page, $revisionToRead, $actor ] );
+
+		$this->notifyPending( $page, $actor, $revisionToRead );
 	}
 
 	/**
 	 * @param PageIdentity $page
+	 * @param RevisionRecord|null $revision
 	 * @return array
 	 */
-	public function getPendingUsers( PageIdentity $page ): array {
-		$revisionId = $this->getRequestedRevisionId( $page );
-		if ( !$revisionId ) {
-			return [];
-		}
-		$revision = $this->revisionLookup->getRevisionById( $revisionId );
+	public function getPendingUsers( PageIdentity $page, ?RevisionRecord $revision = null ): array {
 		if ( !$revision ) {
-			return [];
+			$revisionId = $this->getRequestedRevisionId( $page );
+			if ( !$revisionId ) {
+				return [];
+			}
+			$revision = $this->revisionLookup->getRevisionById( $revisionId );
+			if ( !$revision ) {
+				return [];
+			}
 		}
 		$assignments = $this->assignmentStore->getAssignees( $page );
 		return array_filter( $assignments, function ( UserIdentity $assignee ) use ( $revision ) {
@@ -291,19 +296,7 @@ class ReadConfirmationManager {
 	 */
 	public function sendRemindersForPendingUsers( Title $title, Authority $actor ): array {
 		$this->assertActorCan( 'remind', $title, $actor );
-		$pending = $this->getPendingUsers( $title );
-
-		$event = new PageReadConfirmationReminderEvent(
-			$actor->getUser(), $title, $this->getRequestedRevisionId( $title ), $pending
-		);
-		$this->notifier->emit( $event );
-
-		return array_map(
-			static function ( UserIdentity $user ) {
-				return $user->getName();
-			},
-			$pending
-		);
+		return $this->notifyPending( $title );
 	}
 
 	/**
@@ -392,10 +385,32 @@ class ReadConfirmationManager {
 	 * @throws Exception
 	 */
 	private function notifyUsers( array $users, PageIdentity $page, Authority $actor ) {
+		$users = $this->assignmentStore->resolveAssigneeArray( $users );
 		$event = new PageReadConfirmationReminderEvent(
 			$actor->getUser(), $page, $this->getRequestedRevisionId( $page ), $users
 		);
 		$this->notifier->emit( $event );
 	}
 
+	/**
+	 * @param PageIdentity $page
+	 * @param Authority $actor
+	 * @param RevisionRecord|null $revision
+	 * @return array|string[]
+	 * @throws Exception
+	 */
+	private function notifyPending( PageIdentity $page, Authority $actor, ?RevisionRecord $revision = null ): array {
+		$pending = $this->getPendingUsers( $page, $revision );
+		$event = new PageReadConfirmationReminderEvent(
+			$actor->getUser(), $page, $this->getRequestedRevisionId( $page ), $pending
+		);
+		$this->notifier->emit( $event );
+
+		return array_map(
+			static function ( UserIdentity $user ) {
+				return $user->getName();
+			},
+			$pending
+		);
+	}
 }

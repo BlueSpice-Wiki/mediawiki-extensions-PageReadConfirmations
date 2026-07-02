@@ -57,9 +57,9 @@ class PageReadConfirmationReminderEvent extends TitleEvent {
 	}
 
 	/**
-	 * @return array
+	 * @return array|null
 	 */
-	public function getTargetUsers(): array {
+	public function getPresetSubscribers(): ?array {
 		return $this->targetUsers;
 	}
 

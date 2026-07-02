@@ -5,7 +5,7 @@
 		]
 	},
 	"page-read-confirmations-desc": "Allows user to confirm that they have read a page.",
-	"page-read-confirmations-label": "Read confirmations",
+	"page-read-confirmations-label": "Manage read confirmations",
 	"page-read-confirmations-automation-action-trigger": "Trigger read confirmation",
 	"page-read-confirmations-request-info": "State of read confirmation for version $1",
 	"page-read-confirmations-no-request-info": "No read confirmation has been requested yet",
@@ -27,7 +27,7 @@
 	"page-read-confirmations-error": "An error occurred while processing the request. Please try again.",
 	"page-read-confirmations-assign-instruction": "Select who must confirm they have read this page",
 	"page-read-confirmations-assign-placeholder": "Select individual users or groups...",
-	"page-read-confirmations-assignment-dialog-title": "Set read confirmation assignments",
+	"page-read-confirmations-assignment-dialog-title": "Manage read confirmation assignments",
 	"page-read-confirmations-action-assign": "Save",
 	"page-read-assignments-do-confirm-label": "Confirm reading",
 	"page-read-assignments-has-confirmed-label": "Reading confirmed",
@@ -73,5 +73,7 @@
 	"page-read-confirmations-request-confirmation-button-title": "Request read confirmation for the current version of the page. Only assigned users who have not yet confirmed reading will be requested to confirm reading the page.",
 	"page-read-confirmations-confirm-request": "Are you sure you want to request read confirmation for this version of the page? Only assigned users who have not yet confirmed reading will be requested to confirm reading the page.",
 	"page-read-confirmations-action-request": "Request",
-	"page-read-confirmations-uto-task-header": "Read confirmation required"
+	"page-read-confirmations-uto-task-header": "Read confirmation required",
+	"page-read-confirmations-confirm-assign-dirty": "You made changes to the assignments. You must save changes before viewing current read confirmations.",
+	"page-read-confirmations-action-show-confirmations": "View current read confirmations"
 }
