@@ -7,6 +7,7 @@ use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationEntity;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationManager;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Page\PageIdentity;
+use MediaWiki\Permissions\Authority;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Title\TitleFactory;
@@ -42,6 +43,12 @@ class UpdateUnifiedTaskOverview {
 			->updateTask( $descriptor, $user, true );
 	}
 
+	/**
+	 * @param PageIdentity $page
+	 * @param RevisionRecord $revisionToRead
+	 * @param Authority $actor
+	 * @return void
+	 */
 	public function onPageReadConfirmationRequested(
 		PageIdentity $page,
 		RevisionRecord $revisionToRead,

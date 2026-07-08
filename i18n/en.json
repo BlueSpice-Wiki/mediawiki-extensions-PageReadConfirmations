@@ -75,5 +75,8 @@
 	"page-read-confirmations-action-request": "Request",
 	"page-read-confirmations-uto-task-header": "Read confirmation required",
 	"page-read-confirmations-confirm-assign-dirty": "You made changes to the assignments. You must save changes before viewing current read confirmations.",
-	"page-read-confirmations-action-show-confirmations": "View current read confirmations"
+	"page-read-confirmations-action-show-confirmations": "View current read confirmations",
+	"page-read-confirmations-disabled": "Read confirmations are disabled for this page",
+	"page-read-confirmations-ns-setting-label": "Read confirmations",
+	"page-read-confirmations-ns-setting-help": "Enable requesting users to confirm reading pages in this namespace"
 }

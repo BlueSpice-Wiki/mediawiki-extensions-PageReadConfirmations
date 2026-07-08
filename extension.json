@@ -67,6 +67,13 @@
 					"description": "page-read-confirmation-reminder-event"
 				}
 			}
+		},
+		"BlueSpiceGalaxyDistributionConnector": {
+			"NamespaceSettings": {
+				"pagereadconfirmation": {
+					"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Galaxy\\NamespaceSetting"
+				}
+			}
 		}
 	},
 	"callback": "mwsInitComponents",
@@ -207,7 +214,8 @@
 			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\SetupPageInfoPanelModule"
 		},
 		"addContentAction": {
-			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Hook\\AddContentAction"
+			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Hook\\AddContentAction",
+			"services": [ "PageReadConfirmations.Manager" ]
 		},
 		"integrateDiscoverySkin": {
 			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\DiscoverySkin"
@@ -280,6 +288,12 @@
 			]
 		}
 	],
+	"config": {
+		"PageReadConfirmationsEnabledNamespaces": {
+			"value": [],
+			"description": "Namespaces in which page read confirmations are enabled"
+		}
+	},
 	"LogTypes": [ "ext-page-read-confirmations" ],
 	"LogActionsHandlers": {
 		"ext-page-read-confirmations/*": "LogFormatter"

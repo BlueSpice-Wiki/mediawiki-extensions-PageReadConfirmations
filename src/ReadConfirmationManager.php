@@ -4,6 +4,7 @@ namespace MediaWiki\Extension\PageReadConfirmations;
 
 use DateTime;
 use Exception;
+use MediaWiki\Config\Config;
 use MediaWiki\Extension\PageReadConfirmations\Integration\Event\PageReadConfirmationReminderEvent;
 use MediaWiki\Extension\PageReadConfirmations\Store\ReadConfirmationAssignmentStore;
 use MediaWiki\Extension\PageReadConfirmations\Store\ReadConfirmationStore;
@@ -35,6 +36,7 @@ class ReadConfirmationManager {
 	 * @param LinkRenderer $linkRenderer
 	 * @param ConfirmationLogger $logger
 	 * @param Notifier $notifier
+	 * @param Config $config
 	 */
 	public function __construct(
 		private readonly ReadConfirmationStore $confirmationStore,
@@ -45,7 +47,8 @@ class ReadConfirmationManager {
 		private readonly Language $language,
 		private readonly LinkRenderer $linkRenderer,
 		private readonly ConfirmationLogger $logger,
-		private readonly Notifier $notifier
+		private readonly Notifier $notifier,
+		private readonly Config $config
 	) {
 	}
 
@@ -96,6 +99,9 @@ class ReadConfirmationManager {
 	 * @return void
 	 */
 	public function confirm( UserIdentity $user, RevisionRecord $revisionRecord ): void {
+		if ( !$this->isEnabled( $revisionRecord->getPage() ) ) {
+			return;
+		}
 		if ( !$user->isRegistered() ) {
 			throw new \InvalidArgumentException(
 				Message::newFromKey( 'page-read-confirmations-registered-users-only' )->text()
@@ -202,6 +208,11 @@ class ReadConfirmationManager {
 	 * @throws Exception
 	 */
 	public function storeAssignments( PageIdentity $page, array $assignments, Authority $actor ): void {
+		if ( !$this->isEnabled( $page ) ) {
+			throw new \InvalidArgumentException(
+				Message::newFromKey( 'page-read-confirmations-disabled' )->text()
+			);
+		}
 		$this->assertActorCan( 'assign', $page, $actor );
 		foreach ( $assignments as $assignment ) {
 			if ( !isset( $assignment['key'] ) || !isset( $assignment['type'] ) ) {
@@ -242,6 +253,11 @@ class ReadConfirmationManager {
 		if ( !$page->getId() || $page->getId() !== $revisionToRead->getPageId() ) {
 			throw new \InvalidArgumentException(
 				Message::newFromKey( 'page-read-confirmations-revision-not-for-page' )->text()
+			);
+		}
+		if ( !$this->isEnabled( $page ) ) {
+			throw new \InvalidArgumentException(
+				Message::newFromKey( 'page-read-confirmations-disabled' )->text()
 			);
 		}
 		$this->assertActorCan( 'request', $page, $actor );
@@ -346,6 +362,15 @@ class ReadConfirmationManager {
 
 		$this->hookContainer->run( 'PageReadConfirmationGetRequestInfo', [ $page, &$data ] );
 		return $data;
+	}
+
+	/**
+	 * @param PageIdentity $page
+	 * @return bool
+	 */
+	public function isEnabled( PageIdentity $page ): bool {
+		$enabledNamespaces = $this->config->get( 'PageReadConfirmationsEnabledNamespaces' ) ?? [];
+		return in_array( $page->getNamespace(), $enabledNamespaces, true );
 	}
 
 	/**

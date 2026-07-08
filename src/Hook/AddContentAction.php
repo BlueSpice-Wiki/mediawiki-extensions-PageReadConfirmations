@@ -2,11 +2,20 @@
 
 namespace MediaWiki\Extension\PageReadConfirmations\Hook;
 
+use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationManager;
 use MediaWiki\Hook\BeforePageDisplayHook;
 use MediaWiki\Hook\SkinTemplateNavigation__UniversalHook;
 use MediaWiki\Title\Title;
 
 class AddContentAction implements SkinTemplateNavigation__UniversalHook, BeforePageDisplayHook {
+
+	/**
+	 * @param ReadConfirmationManager $manager
+	 */
+	public function __construct(
+		private readonly ReadConfirmationManager $manager
+	) {
+	}
 
 	/**
 	 * @inheritDoc
@@ -38,7 +47,6 @@ class AddContentAction implements SkinTemplateNavigation__UniversalHook, BeforeP
 	 * @return bool
 	 */
 	private function pageSupported( Title $page ): bool {
-		// Check for content page here?
-		return $page->exists();
+		return $page->exists() && $this->manager->isEnabled( $page );
 	}
 }

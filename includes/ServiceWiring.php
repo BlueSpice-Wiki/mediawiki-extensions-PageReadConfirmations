@@ -33,7 +33,8 @@ return [
 			$services->getContentLanguage(),
 			$services->getLinkRenderer(),
 			new ConfirmationLogger( LoggerFactory::getInstance( 'PageReadConfirmations' ) ),
-			$services->getService( 'MWStake.Notifier' )
+			$services->getService( 'MWStake.Notifier' ),
+			$services->getMainConfig()
 		);
 	},
 	'PageReadConfirmations._AutomaticAssigner' => static function ( MediaWikiServices $services ) {

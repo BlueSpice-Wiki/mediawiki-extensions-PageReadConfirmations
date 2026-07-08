@@ -51,7 +51,7 @@ class TriggerReadConfirmationActivity extends GenericActivity {
 			);
 		}
 
-		$shouldTrigger = $data['should_trigger'] !== '0';
+		$shouldTrigger = (string)( $data['should_trigger'] ?? '1' ) !== '0';
 		if ( !$shouldTrigger ) {
 			return new ExecutionStatus( static::STATUS_COMPLETE, [ 'skipped' => true ] );
 		}

@@ -4,6 +4,7 @@ namespace MediaWiki\Extension\PageReadConfirmations\Tests;
 
 use Exception;
 use InvalidArgumentException;
+use MediaWiki\Config\Config;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationManager;
 use MediaWiki\Extension\PageReadConfirmations\Store\ReadConfirmationAssignmentStore;
 use MediaWiki\Extension\PageReadConfirmations\Store\ReadConfirmationStore;
@@ -37,6 +38,9 @@ class ReadConfirmationManagerTest extends TestCase {
 	/** @var PermissionManager|MockObject */
 	private $permissionManager;
 
+	/** @var Config|MockObject */
+	private $config;
+
 	/** @var ReadConfirmationManager */
 	private $manager;
 
@@ -44,6 +48,8 @@ class ReadConfirmationManagerTest extends TestCase {
 		$this->confirmationStore = $this->createMock( ReadConfirmationStore::class );
 		$this->assignmentStore = $this->createMock( ReadConfirmationAssignmentStore::class );
 		$this->permissionManager = $this->createMock( PermissionManager::class );
+		$this->config = $this->createMock( Config::class );
+		$this->config->method( 'get' )->with( 'PageReadConfirmationsEnabledNamespaces' )->willReturn( [ 0 ] );
 
 		$this->manager = new ReadConfirmationManager(
 			$this->confirmationStore,
@@ -54,7 +60,8 @@ class ReadConfirmationManagerTest extends TestCase {
 			$this->createMock( Language::class ),
 			$this->createMock( LinkRenderer::class ),
 			$this->createMock( ConfirmationLogger::class ),
-			$this->createMock( Notifier::class )
+			$this->createMock( Notifier::class ),
+			$this->config
 		);
 	}
 
@@ -79,7 +86,9 @@ class ReadConfirmationManagerTest extends TestCase {
 		$user->method( 'isRegistered' )->willReturn( true );
 
 		$revision = $this->createMock( RevisionRecord::class );
-		$revision->method( 'getPage' )->willReturn( $this->createMock( PageIdentity::class ) );
+		$page = $this->createMock( PageIdentity::class );
+		$page->method( 'getNamespace' )->willReturn( 0 );
+		$revision->method( 'getPage' )->willReturn( $page );
 
 		$this->assignmentStore->method( 'isAssigned' )->willReturn( false );
 
@@ -95,7 +104,9 @@ class ReadConfirmationManagerTest extends TestCase {
 		$user->method( 'isRegistered' )->willReturn( true );
 
 		$revision = $this->createMock( RevisionRecord::class );
-		$revision->method( 'getPage' )->willReturn( $this->createMock( PageIdentity::class ) );
+		$page = $this->createMock( PageIdentity::class );
+		$page->method( 'getNamespace' )->willReturn( 0 );
+		$revision->method( 'getPage' )->willReturn( $page );
 		$revision->method( 'getId' )->willReturn( 1 );
 
 		// isAssigned returns true but requested revision ID differs from the revision being confirmed
@@ -118,7 +129,7 @@ class ReadConfirmationManagerTest extends TestCase {
 
 		$this->expectException( InvalidArgumentException::class );
 		$this->manager->storeAssignments(
-			$this->createMock( PageIdentity::class ),
+			$this->makeEnabledPageIdentity(),
 			[ [ 'no_key' => 'val' ] ],
 			$actor
 		);
@@ -134,7 +145,7 @@ class ReadConfirmationManagerTest extends TestCase {
 
 		$this->expectException( InvalidArgumentException::class );
 		$this->manager->storeAssignments(
-			$this->createMock( PageIdentity::class ),
+			$this->makeEnabledPageIdentity(),
 			[ [ 'key' => 'someuser', 'type' => 'invalid_type' ] ],
 			$actor
 		);
@@ -151,7 +162,7 @@ class ReadConfirmationManagerTest extends TestCase {
 
 		$this->expectException( Exception::class );
 		$this->manager->storeAssignments(
-			$this->createMock( Title::class ),
+			$this->makeEnabledTitle(),
 			[],
 			$actor
 		);
@@ -165,6 +176,7 @@ class ReadConfirmationManagerTest extends TestCase {
 	public function testRequestRevisionConfirmationThrowsWhenRevisionBelongsToDifferentPage(): void {
 		$page = $this->createMock( PageIdentity::class );
 		$page->method( 'getId' )->willReturn( 1 );
+		$page->method( 'getNamespace' )->willReturn( 0 );
 
 		$revision = $this->createMock( RevisionRecord::class );
 		$revision->method( 'getPageId' )->willReturn( 2 );
@@ -183,6 +195,7 @@ class ReadConfirmationManagerTest extends TestCase {
 	public function testRequestRevisionConfirmationThrowsWhenRevisionIsOlderThanCurrent(): void {
 		$page = $this->createMock( PageIdentity::class );
 		$page->method( 'getId' )->willReturn( 1 );
+		$page->method( 'getNamespace' )->willReturn( 0 );
 
 		$revision = $this->createMock( RevisionRecord::class );
 		$revision->method( 'getPageId' )->willReturn( 1 );
@@ -233,5 +246,23 @@ class ReadConfirmationManagerTest extends TestCase {
 			$this->createMock( Title::class ),
 			$actor
 		);
+	}
+
+	/**
+	 * @return PageIdentity&MockObject
+	 */
+	private function makeEnabledPageIdentity() {
+		$page = $this->createMock( PageIdentity::class );
+		$page->method( 'getNamespace' )->willReturn( 0 );
+		return $page;
+	}
+
+	/**
+	 * @return Title&MockObject
+	 */
+	private function makeEnabledTitle() {
+		$page = $this->createMock( Title::class );
+		$page->method( 'getNamespace' )->willReturn( 0 );
+		return $page;
 	}
 }

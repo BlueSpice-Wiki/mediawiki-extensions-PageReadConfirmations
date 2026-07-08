@@ -42,6 +42,9 @@ class ReadConfirmationsTool extends Literal {
 		if ( !$title || !$title->exists() || !$title->canExist() ) {
 			return false;
 		}
+		if ( !$this->manager->isEnabled( $title ) ) {
+			return false;
+		}
 		$action = $context->getRequest()->getVal( 'action', 'view' );
 		if ( $action !== 'view' ) {
 			return false;
