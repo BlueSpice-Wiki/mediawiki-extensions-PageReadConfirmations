@@ -48,20 +48,19 @@ class NeoWikiPropertiesUpdater implements
 
 	/**
 	 * @param PageIdentity $page
-	 * @param UserIdentity $user
 	 * @return void
 	 */
-	private function tryUpdateNeoWikiProperties( PageIdentity $page, UserIdentity $user ) {
+	private function tryUpdateNeoWikiProperties( PageIdentity $page ) {
 		if ( !ExtensionRegistry::getInstance()->isLoaded( 'NeoWiki' ) ) {
 			return;
 		}
-		$rev = $this->revisionLookup->getRevisionByTitle( $page );
-		if ( !$rev ) {
+		$title = $this->titleFactory->castFromPageIdentity( $page );
+		if ( !$title ) {
 			return;
 		}
 		NeoWikiExtension::getInstance()
-			->getStoreContentUC()
-			->onRevisionCreated( $rev, $user );
+			->newSubjectPageRebuilder()
+			->rebuild( $title );
 	}
 
 	/**
@@ -70,14 +69,14 @@ class NeoWikiPropertiesUpdater implements
 	public function onPageReadConfirmationAssignmentsChanged(
 		PageIdentity $page, array $added, array $removed, Authority $actor
 	): void {
-		$this->tryUpdateNeoWikiProperties( $page, $actor->getUser() );
+		$this->tryUpdateNeoWikiProperties( $page );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function onPageReadConfirmationConfirmed( ReadConfirmationEntity $confirmation ): void {
-		$this->tryUpdateNeoWikiProperties( $confirmation->revision->getPage(), $confirmation->assignee );
+		$this->tryUpdateNeoWikiProperties( $confirmation->revision->getPage() );
 	}
 
 	/**
@@ -86,6 +85,6 @@ class NeoWikiPropertiesUpdater implements
 	public function onPageReadConfirmationRequested(
 		PageIdentity $page, RevisionRecord $revisionToRead, Authority $actor
 	): void {
-		$this->tryUpdateNeoWikiProperties( $page, $actor->getUser() );
+		$this->tryUpdateNeoWikiProperties( $page );
 	}
 }
