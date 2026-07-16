@@ -17,7 +17,7 @@
 	"page-read-confirmations-no-pending": "No pending confirmations",
 	"page-read-confirmations-send-reminder": "Send reminder",
 	"page-read-confirmations-more-actions": "More actions",
-	"page-read-confirmations-edit-assignments": "Edit confirmation assignments",
+	"page-read-confirmations-edit-assignments": "Edit assignments",
 	"page-read-confirmations-cancel-request": "Cancel confirmation request",
 	"page-read-confirmations-confirm-cancel-request": "Are you sure you want to cancel the confirmation request for this version?",
 	"page-read-confirmations-action-delete": "Delete",
@@ -78,5 +78,5 @@
 	"page-read-confirmations-action-show-confirmations": "View current read confirmations",
 	"page-read-confirmations-disabled": "Read confirmations are disabled for this page",
 	"page-read-confirmations-ns-setting-label": "Read confirmations",
-	"page-read-confirmations-ns-setting-help": "Enable requesting users to confirm reading pages in this namespace"
+	"page-read-confirmations-ns-setting-help": "Enable read confirmations for pages in this namespace"
 }
