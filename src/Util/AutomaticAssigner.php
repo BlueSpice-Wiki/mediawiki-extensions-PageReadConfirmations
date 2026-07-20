@@ -58,12 +58,14 @@ readonly class AutomaticAssigner {
 			$this->confirmationManager->storeAssignments(
 				$title,
 				$assignments,
-				User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] )
+				User::newSystemUser( User::MAINTENANCE_SCRIPT_USER, [ 'steal' => true ] )
 			);
 		}
 
 		$this->confirmationManager->requestRevisionConfirmation(
-			$title, $revision, User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] )
+			$title,
+			$revision,
+			User::newSystemUser( User::MAINTENANCE_SCRIPT_USER, [ 'steal' => true ] )
 		);
 	}
 
