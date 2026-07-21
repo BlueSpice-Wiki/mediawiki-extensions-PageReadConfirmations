@@ -31,6 +31,7 @@
 	"page-read-confirmations-action-assign": "Speichern",
 	"page-read-assignments-do-confirm-label": "Lesen bestätigen",
 	"page-read-assignments-has-confirmed-label": "Lesen bestätigt",
+	"page-read-confirmations-confirm-confirmation-title": "Lesebestätigung",
 	"page-read-confirmations-confirm-confirmation": "{{#FORMAL:Du bist|Sie sind}} dabei zu bestätigen, dass {{#FORMAL:du|Sie}} diese Seite vollständig gelesen {{#FORMAL:hast|haben}}",
 	"page-read-confirmations-inspector-activity-trigger-revision": "Version, für die ausgelöst werden soll",
 	"page-read-confirmations-inspector-activity-trigger-revision-placeholder": "Wenn nicht angegeben, wird für die neueste Version ausgelöst",

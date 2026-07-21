@@ -96,7 +96,9 @@
 			"messages": [
 				"page-read-confirmations-confirm-confirmation",
 				"page-read-confirmations-action-cancel",
-				"page-read-confirmations-action-confirm"
+				"page-read-confirmations-action-confirm",
+				"page-read-confirmations-confirm-confirmation-title",
+				"page-read-confirmations-error"
 			]
 		},
 		"ext.pageReadConfirmations.confirmationPanel": {

@@ -119,16 +119,16 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 					message: mw.msg( 'page-read-confirmations-confirm-assign-dirty' ),
 					actions: [
 						{
+							label: mw.msg( 'page-read-confirmations-action-cancel' ),
+							action: 'cancel'
+						},
+						{
 							label: mw.msg( 'page-read-confirmations-action-assign' ),
 							flags: [ 'progressive' ],
 							action: 'accept'
-						},
-						{
-							label: mw.msg( 'page-read-confirmations-action-cancel' ),
-							action: 'cancel'
 						}
 					],
-					size: 'large'
+					size: 'medium'
 				} ).closed
 					.then( ( data ) => !!( data && data.action === 'accept' ) )
 					.done( ( confirmed ) => {

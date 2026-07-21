@@ -146,7 +146,10 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.setRequestInfo = async fu
 		} else {
 			this.oldRevisionWarning.$element.show();
 		}
-		this.requestButton.$element.hide();
+		this.requestButton.$element.show();
+		if ( this.pendingCount > 0 || requestInfo.is_current || !this.isOnLatestRev ) {
+			this.requestButton.$element.hide();
+		}
 	} else {
 		this.versionLabel.setLabel( mw.msg( 'page-read-confirmations-no-request-info' ) );
 		if ( this.isOnLatestRev ) {
@@ -219,9 +222,13 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.addActionHeading = functi
 	this.actionHeading = new OO.ui.HorizontalLayout( {
 		items: [
 			new OO.ui.LabelWidget( {
-				label: this.pendingCount ?
-					mw.msg( 'page-read-confirmations-pending-count', this.pendingCount ) :
-					mw.msg( 'page-read-confirmations-no-pending' )
+				label: new OO.ui.HtmlSnippet(
+					'<b>' +
+					this.pendingCount ?
+							mw.msg( 'page-read-confirmations-pending-count', this.pendingCount ) :
+							mw.msg( 'page-read-confirmations-no-pending' ) +
+					'</b>'
+				)
 			} ),
 			new OO.ui.ButtonGroupWidget( {
 				classes: [ 'ext-page-read-confirmations-actions' ],
@@ -243,13 +250,13 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = fun
 		mw.msg( 'page-read-confirmations-confirm-remind-request' ), {
 			actions: [
 				{
+					label: mw.msg( 'page-read-confirmations-action-cancel' ),
+					action: 'cancel'
+				},
+				{
 					label: mw.msg( 'page-read-confirmations-action-remind' ),
 					flags: [ 'progressive' ],
 					action: 'accept'
-				},
-				{
-					label: mw.msg( 'page-read-confirmations-action-cancel' ),
-					action: 'cancel'
 				}
 			]
 		} )
@@ -320,16 +327,16 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onRequestConfirmationClic
 		mw.msg( 'page-read-confirmations-confirm-request' ), {
 			actions: [
 				{
+					label: mw.msg( 'page-read-confirmations-action-cancel' ),
+					action: 'cancel'
+				},
+				{
 					label: mw.msg( 'page-read-confirmations-action-request' ),
 					flags: [ 'progressive' ],
 					action: 'accept'
-				},
-				{
-					label: mw.msg( 'page-read-confirmations-action-cancel' ),
-					action: 'cancel'
 				}
 			],
-			size: 'large'
+			size: 'medium'
 		} )
 		.done( async ( confirmed ) => {
 			if ( !confirmed ) {

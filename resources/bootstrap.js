@@ -25,6 +25,7 @@ $( () => {
 	$( '.page-read-confirmations-confirm-button' ).on( 'click', function ( e ) {
 		OO.ui.confirm(
 			mw.msg( 'page-read-confirmations-confirm-confirmation' ), {
+				title: mw.msg( 'page-read-confirmations-confirm-confirmation-title' ),
 				actions: [
 					{
 						label: mw.msg( 'page-read-confirmations-action-cancel' ),
