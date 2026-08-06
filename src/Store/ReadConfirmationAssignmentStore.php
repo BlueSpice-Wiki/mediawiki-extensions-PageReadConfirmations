@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extension\PageReadConfirmations\Store;
 
+use MediaWiki\Config\Config;
 use MediaWiki\Page\PageIdentity;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\User\User;
@@ -18,14 +19,14 @@ class ReadConfirmationAssignmentStore {
 	 * @param UserGroupManager $userGroupManager
 	 * @param UserFactory $userFactory
 	 * @param PermissionManager $permissionManager
-	 * @param \Config $config
+	 * @param Config $config
 	 */
 	public function __construct(
 		private readonly ILoadBalancer $lb,
 		private readonly UserGroupManager $userGroupManager,
 		private readonly UserFactory $userFactory,
 		private readonly PermissionManager $permissionManager,
-		private readonly \Config $config
+		private readonly Config $config
 	) {
 	}
 
