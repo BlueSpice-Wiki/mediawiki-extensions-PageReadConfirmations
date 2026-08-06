@@ -4,6 +4,7 @@ namespace MediaWiki\Extension\PageReadConfirmations\Integration\MetaItemProvider
 
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationManager;
+use MediaWiki\Html\Html;
 use MediaWiki\Message\Message;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
@@ -89,12 +90,12 @@ class ReadConfirmationsTool extends Literal {
 					$this->mustReadAnother->getId()
 				)->parse();
 			// There is a revision user must read, but not this one
-			return \Html::rawElement( 'span', [
+			return Html::rawElement( 'span', [
 				'class' => 'page-read-confirmations-requested-another-label'
 			], $message );
 		} elseif ( $this->readAt ) {
 			// Already read
-			return \Html::element( 'span', [
+			return Html::element( 'span', [
 				'class' => 'page-read-confirmations-confirmed-label'
 			], Message::newFromKey( 'page-read-assignments-has-confirmed-label' )->text() );
 		}
