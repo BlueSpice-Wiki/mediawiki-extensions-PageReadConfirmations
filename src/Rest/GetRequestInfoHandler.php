@@ -6,6 +6,7 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationManager;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Rest\HttpException;
 use MediaWiki\Rest\SimpleHandler;
 use MediaWiki\Title\TitleFactory;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -33,7 +34,7 @@ class GetRequestInfoHandler extends SimpleHandler {
 
 	/**
 	 * @return \MediaWiki\Rest\Response|mixed
-	 * @throws \HttpException
+	 * @throws HttpException
 	 */
 	public function execute() {
 		$params = $this->getValidatedParams();
@@ -44,7 +45,7 @@ class GetRequestInfoHandler extends SimpleHandler {
 			);
 		}
 		if ( !$this->permissionManager->userCan( 'read', RequestContext::getMain()->getUser(), $title ) ) {
-			throw new \HttpException( 'permissiondenied', 403 );
+			throw new HttpException( 'permissiondenied', 403 );
 		}
 
 		return $this->getResponseFactory()->createJson(
