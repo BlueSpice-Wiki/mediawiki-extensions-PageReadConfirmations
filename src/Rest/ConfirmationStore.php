@@ -53,7 +53,7 @@ class ConfirmationStore extends QueryStore {
 		if ( !$title || !$title->exists() ) {
 			throw new HttpException( 'Page not found', 404 );
 		}
-		if ( !$this->permissionManager->userCan( 'read', $user, $title ) ) {
+		if ( !$user->isRegistered() || !$this->permissionManager->userCan( 'read', $user, $title ) ) {
 			throw new HttpException( 'permissiondenied', 403 );
 		}
 		return new Store(

@@ -44,7 +44,8 @@ class GetAssignmentsHandler extends SimpleHandler {
 				Message::newFromKey( 'page-read-confirmations-invalid-page-id' )->text()
 			);
 		}
-		if ( !$this->permissionManager->userCan( 'read', RequestContext::getMain()->getUser(), $title ) ) {
+		$user = RequestContext::getMain()->getUser();
+		if ( !$user->isRegistered() || !$this->permissionManager->userCan( 'read', $user, $title ) ) {
 			throw new HttpException( 'permissiondenied', 403 );
 		}
 

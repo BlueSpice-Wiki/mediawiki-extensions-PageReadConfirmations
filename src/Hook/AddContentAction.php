@@ -31,6 +31,9 @@ class AddContentAction implements SkinTemplateNavigation__UniversalHook, BeforeP
 	 * @inheritDoc
 	 */
 	public function onSkinTemplateNavigation__Universal( $sktemplate, &$links ): void {
+		if ( !$sktemplate->getUser()->isRegistered() ) {
+			return;
+		}
 		if ( !$this->pageSupported( $sktemplate->getTitle() ) ) {
 			return;
 		}

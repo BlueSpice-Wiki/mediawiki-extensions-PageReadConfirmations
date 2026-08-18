@@ -393,7 +393,7 @@ class ReadConfirmationManager {
 				break;
 			case 'request':
 			case 'remind':
-				$can = $this->permissionManager->userCan( 'read', $actor, $page );
+				$can = $actor->isRegistered() && $this->permissionManager->userCan( 'read', $actor, $page );
 				break;
 		}
 
