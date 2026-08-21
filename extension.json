@@ -203,9 +203,10 @@
 		"BeforePageDisplay": "addContentAction",
 		"BlueSpiceDiscoveryTemplateDataProviderAfterInit": "integrateDiscoverySkin",
 		"PageReadConfirmationConfirmed": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ],
-		"PageReadConfirmationAssignmentsChanged": "updateNeoWikiProperties",
+		"PageReadConfirmationAssignmentsChanged": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ],
 		"PageReadConfirmationRequested": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ],
-		"NeoWikiRegistration": "updateNeoWikiProperties"
+		"NeoWikiRegistration": "updateNeoWikiProperties",
+		"PageReadConfirmationRequestDeleted": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ]
 
 	},
 	"HookHandlers": {
@@ -228,7 +229,7 @@
 		},
 		"updateUnifiedTaskOverview": {
 			"class": "MediaWiki\\Extension\\PageReadConfirmations\\Integration\\Hook\\UpdateUnifiedTaskOverview",
-			"services": [ "PageReadConfirmations.Manager", "TitleFactory", "UserFactory" ]
+			"services": [ "PageReadConfirmations.Manager", "TitleFactory", "PageReadConfirmations.AssignmentStore" ]
 		}
 	},
 	"ServiceWiringFiles": [

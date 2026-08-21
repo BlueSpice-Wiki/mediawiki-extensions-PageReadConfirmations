@@ -137,6 +137,7 @@ class ReadConfirmationManager {
 	public function deleteRequest( PageIdentity $page, Authority $actor ): void {
 		$this->assertActorCan( 'deleteRequest', $page, $actor );
 		$this->assignmentStore->deleteRequestForPage( $page->getId() );
+		$this->hookContainer->run( 'PageReadConfirmationRequestDeleted', [ $page, $actor ] );
 		$this->logger->logRemoveRequest( $actor->getUser(), $page );
 	}
 
