@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extension\PageReadConfirmations\Store;
 
+use MediaWiki\Block\BlockManager;
 use MediaWiki\Config\Config;
 use MediaWiki\Page\PageIdentity;
 use MediaWiki\Permissions\PermissionManager;
@@ -20,13 +21,15 @@ class ReadConfirmationAssignmentStore {
 	 * @param UserFactory $userFactory
 	 * @param PermissionManager $permissionManager
 	 * @param Config $config
+	 * @param BlockManager $blockManager
 	 */
 	public function __construct(
 		private readonly ILoadBalancer $lb,
 		private readonly UserGroupManager $userGroupManager,
 		private readonly UserFactory $userFactory,
 		private readonly PermissionManager $permissionManager,
-		private readonly Config $config
+		private readonly Config $config,
+		private readonly BlockManager $blockManager
 	) {
 	}
 
@@ -339,6 +342,9 @@ class ReadConfirmationAssignmentStore {
 		$members = [];
 		foreach ( $membersRes as $memberRow ) {
 			$user = $this->userFactory->newFromName( $memberRow->user_name );
+			if ( $this->blockManager->getBlock( $user, null ) ) {
+				continue;
+			}
 			if ( $user ) {
 				$members[] = $user;
 			}
