@@ -312,7 +312,7 @@ class ReadConfirmationManager {
 	 */
 	public function sendRemindersForPendingUsers( Title $title, Authority $actor ): array {
 		$this->assertActorCan( 'remind', $title, $actor );
-		return $this->notifyPending( $title );
+		return $this->notifyPending( $title, $actor );
 	}
 
 	/**
