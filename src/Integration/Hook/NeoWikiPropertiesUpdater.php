@@ -4,6 +4,7 @@ namespace MediaWiki\Extension\PageReadConfirmations\Integration\Hook;
 
 use MediaWiki\Extension\PageReadConfirmations\Hook\PageReadConfirmationAssignmentsChangedHook;
 use MediaWiki\Extension\PageReadConfirmations\Hook\PageReadConfirmationConfirmedHook;
+use MediaWiki\Extension\PageReadConfirmations\Hook\PageReadConfirmationRequestDeletedHook;
 use MediaWiki\Extension\PageReadConfirmations\Hook\PageReadConfirmationRequestedHook;
 use MediaWiki\Extension\PageReadConfirmations\Integration\NeoWiki\ConfirmationProperties;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationEntity;
@@ -14,14 +15,14 @@ use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Title\TitleFactory;
-use MediaWiki\User\UserIdentity;
 use ProfessionalWiki\NeoWiki\EntryPoints\NeoWikiRegistrar;
 use ProfessionalWiki\NeoWiki\NeoWikiExtension;
 
 class NeoWikiPropertiesUpdater implements
 	PageReadConfirmationConfirmedHook,
 	PageReadConfirmationAssignmentsChangedHook,
-	PageReadConfirmationRequestedHook
+	PageReadConfirmationRequestedHook,
+	PageReadConfirmationRequestDeletedHook
 {
 
 	/**
@@ -77,6 +78,13 @@ class NeoWikiPropertiesUpdater implements
 	 */
 	public function onPageReadConfirmationConfirmed( ReadConfirmationEntity $confirmation ): void {
 		$this->tryUpdateNeoWikiProperties( $confirmation->revision->getPage() );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function onPageReadConfirmationRequestDeleted( PageIdentity $page, Authority $authority ): void {
+		$this->tryUpdateNeoWikiProperties( $page );
 	}
 
 	/**

@@ -8,35 +8,20 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Message\Message;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Title\Title;
-use stdClass;
 
 class ReadConfirmationTaskDescriptor implements ITaskDescriptor {
 
 	private Title $title;
-	private RevisionRecord $revisionToConfirm;
+	private ?RevisionRecord $revisionToConfirm;
 
-	public function __construct( Title $title, RevisionRecord $revisionToConfirm ) {
+	public function __construct( Title $title, ?RevisionRecord $revisionToConfirm = null ) {
 		$this->title = $title;
 		$this->revisionToConfirm = $revisionToConfirm;
 	}
 
 	/** @inheritDoc */
-	public static function newFromTaskRow( stdClass $row ): ?static {
-		$services = MediaWikiServices::getInstance();
-		$title = $services->getTitleFactory()->newFromID( (int)$row->uto_page_id );
-		if ( !$title ) {
-			return null;
-		}
-		$revision = $services->getRevisionLookup()->getRevisionByTitle( $title );
-		if ( !$revision ) {
-			return null;
-		}
-		return new static( $title, $revision );
-	}
-
-	/** @inheritDoc */
 	public function getUniqueKey(): string {
-		return $this->title->getArticleID() . ':' . ( $this->revisionToConfirm->getId() ?? 0 );
+		return $this->title->getPrefixedDBkey();
 	}
 
 	/** @inheritDoc */
@@ -52,7 +37,7 @@ class ReadConfirmationTaskDescriptor implements ITaskDescriptor {
 	/** @inheritDoc */
 	public function getURL(): string {
 		$query = [];
-		if ( !$this->revisionToConfirm->isCurrent() ) {
+		if ( $this->revisionToConfirm && !$this->revisionToConfirm->isCurrent() ) {
 			$query = [ 'oldid' => $this->revisionToConfirm->getId() ];
 		}
 		return $this->title->getFullURL( $query );
