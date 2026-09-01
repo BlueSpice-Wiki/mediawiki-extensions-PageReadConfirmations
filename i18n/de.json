@@ -79,5 +79,5 @@
 	"page-read-confirmations-action-show-confirmations": "Aktuelle Lesebestätigungen anzeigen",
 	"page-read-confirmations-disabled": "Lesebestätigungen sind für diese Seite deaktiviert",
 	"page-read-confirmations-ns-setting-label": "Lesebestätigungen",
-	"page-read-confirmations-ns-setting-help": "Lese-Bestätigungen für Seiten in diesem Namensraum erlauben"
+	"page-read-confirmations-ns-setting-help": "Lesebestätigungen für Seiten erstellen"
 }

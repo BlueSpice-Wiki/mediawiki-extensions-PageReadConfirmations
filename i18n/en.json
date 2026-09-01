@@ -79,5 +79,5 @@
 	"page-read-confirmations-action-show-confirmations": "View current read confirmations",
 	"page-read-confirmations-disabled": "Read confirmations are disabled for this page",
 	"page-read-confirmations-ns-setting-label": "Read confirmations",
-	"page-read-confirmations-ns-setting-help": "Enable read confirmations for pages in this namespace"
+	"page-read-confirmations-ns-setting-help": "Create read confirmations for pages"
 }
