@@ -31,7 +31,7 @@ class ReadConfirmationStore {
 	public function store( ReadConfirmationEntity $entity ): void {
 		$this->remove( $entity );
 
-		$db = $this->lb->getConnectionRef( DB_PRIMARY );
+		$db = $this->lb->getConnection( DB_PRIMARY );
 		$row = [
 			'prc_user' => $entity->assignee->getId(),
 			'prc_rev' => $entity->revision->getId(),
@@ -51,7 +51,7 @@ class ReadConfirmationStore {
 	 * @return void
 	 */
 	public function remove( ReadConfirmationEntity $entity ): void {
-		$db = $this->lb->getConnectionRef( DB_PRIMARY );
+		$db = $this->lb->getConnection( DB_PRIMARY );
 		$db->newDeleteQueryBuilder()
 			->delete( 'page_read_confirmations' )
 			->where( [
