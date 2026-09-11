@@ -2,11 +2,11 @@ ext.pageReadConfirmations.api =  {
 	getAssignments: async ( pageId ) => {
 		return ext.pageReadConfirmations.api._ajax( '/assignments/' + pageId, {}, 'GET' );
 	},
-	storeAssignment: async ( page, assignments, requestCurrentRevision ) => {
+	storeAssignment: async ( page, assignments, requestRevision ) => {
 		return ext.pageReadConfirmations.api._ajax( '/set_confirmations', {
 			page: page,
 			assignments: JSON.stringify( assignments ),
-			requestCurrentRevision: requestCurrentRevision || false
+			requestRevision: requestRevision || false
 		}, 'POST' );
 	},
 	confirmRead: async ( revision ) => {

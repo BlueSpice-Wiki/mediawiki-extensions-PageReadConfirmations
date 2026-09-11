@@ -40,25 +40,37 @@ class SetConfirmationsHandler extends SimpleHandler {
 		$assignments = json_decode( $body['assignments'], true );
 		$this->confirmationManager->storeAssignments( $title, $assignments, RequestContext::getMain()->getUser() );
 
-		$requested = false;
-		if ( $body['requestCurrentRevision'] ?? false ) {
+		$requestRevision = $body['requestRevision'] ?? null;
+		$revision = null;
+		if ( $requestRevision ) {
+			$revision = $this->revisionLookup->getRevisionById( $requestRevision );
+			if ( !$revision ) {
+				throw new \InvalidArgumentException(
+					Message::newFromKey( 'page-read-confirmations-no-revision-found-for-page' )->text()
+				);
+			}
+		}
+		if ( !$requestRevision && $body['requestCurrentRevision'] ?? false ) {
+			$latestRevision = $this->revisionLookup->getRevisionByTitle( $title );
+			if ( !$latestRevision ) {
+				throw new \InvalidArgumentException(
+					Message::newFromKey( 'page-read-confirmations-no-revision-found-for-page' )->text()
+				);
+			}
+			$revision = $latestRevision;
+		}
+
+		if ( $revision ) {
 			if ( !$this->confirmationManager->getRequestedRevisionId( $title ) ) {
-				$revision = $this->revisionLookup->getRevisionByTitle( $title );
-				if ( !$revision ) {
-					throw new \InvalidArgumentException(
-						Message::newFromKey( 'page-read-confirmations-no-revision-found-for-page' )->text()
-					);
-				}
 				$this->confirmationManager->requestRevisionConfirmation(
 					$title, $revision, RequestContext::getMain()->getUser()
 				);
-				$requested = true;
 			}
 		}
 
 		return [
 			'success' => true,
-			'requestedCurrentRevision' => $requested
+			'requestedRevision' => $revision?->getId(),
 		];
 	}
 
@@ -80,6 +92,11 @@ class SetConfirmationsHandler extends SimpleHandler {
 			'requestCurrentRevision' => [
 				static::PARAM_SOURCE => 'body',
 				ParamValidator::PARAM_TYPE => 'boolean',
+				ParamValidator::PARAM_REQUIRED => false
+			],
+			'requestRevision' => [
+				static::PARAM_SOURCE => 'body',
+				ParamValidator::PARAM_TYPE => 'integer',
 				ParamValidator::PARAM_REQUIRED => false
 			]
 		];

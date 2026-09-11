@@ -351,6 +351,8 @@ class ReadConfirmationManager {
 		$linkQuery = $requestedRev->isCurrent() ? [] : [ 'oldid' => $requestedRev->getId() ];
 		$data = [
 			'revision' => $requestedRev->getId(),
+			'revision_timestamp' => $requestedRev->getTimestamp(),
+			'version_label' => $revisionTimestamp,
 			'version_link' => [
 				'text' => $revisionTimestamp,
 				'query' => $linkQuery,
@@ -358,6 +360,7 @@ class ReadConfirmationManager {
 			],
 			'pending' => $pending,
 			'read' => $read,
+			'total' => $pending + $read,
 			'is_current' => $requestedRev->isCurrent()
 		];
 

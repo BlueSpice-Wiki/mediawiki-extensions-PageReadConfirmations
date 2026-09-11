@@ -166,7 +166,10 @@
 				"page-read-confirmations-assignment-dialog-title",
 				"page-read-confirmations-action-assign",
 				"page-read-confirmations-confirm-assign-dirty",
-				"page-read-confirmations-action-show-confirmations"
+				"page-read-confirmations-action-show-confirmations",
+				"page-read-confirmations-action-save",
+				"page-read-assignments-has-another-request-label-extended",
+				"page-read-assignments-has-another-request-button"
 			]
 		},
 		"ext.pageReadConfirmations.workflows.editor": {
@@ -189,6 +192,21 @@
 				"ext.pageReadConfirmations.bootstrap",
 				"ext.workflows.editor.inspector.bootstrap",
 				"ext.workflows.editor.customElements.bootstrap"
+			]
+		},
+		"ext.pageReadConfirmations.anotherRequestedPopup": {
+			"scripts": [
+				"anotherRequestedPopup.js"
+			],
+			"styles": [
+				"anotherRequestedPopup.css"
+			],
+			"dependencies": [
+				"ext.pageReadConfirmations.bootstrap"
+			],
+			"messages": [
+				"page-read-assignments-has-another-request-label",
+				"page-read-assignments-has-another-request-button"
 			]
 		}
 	},

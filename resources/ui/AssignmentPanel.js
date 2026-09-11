@@ -75,6 +75,10 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 	}
 };
 
+ext.pageReadConfirmations.ui.AssignmentPanel.prototype.resetValues = function () {
+	this.userGroupPicker.setValue( this.orignalValue );
+};
+
 ext.pageReadConfirmations.ui.AssignmentPanel.prototype.getValue = function () {
 	return this.userGroupPicker.getValue();
 };

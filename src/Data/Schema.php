@@ -37,6 +37,11 @@ class Schema extends \MWStake\MediaWiki\Component\DataStore\Schema {
 				self::SORTABLE => false,
 				self::TYPE => FieldType::STRING
 			],
+			Record::READ_REVISION_TEXT => [
+				self::FILTERABLE => false,
+				self::SORTABLE => false,
+				FieldType::STRING
+			],
 			Record::HAS_CONFIRMED => [
 				self::FILTERABLE => false,
 				self::SORTABLE => false,

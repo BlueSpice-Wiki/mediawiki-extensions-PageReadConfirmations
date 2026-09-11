@@ -4,7 +4,8 @@ ext.pageReadConfirmations.ConfirmationsPanel = function( config ) {
 	this.windowManager = null;
 	this.allowEditing = typeof config.allowEditing === 'boolean' ? config.allowEditing : true;
 	this.pendingCount = 0;
-	this.isOnLatestRev = mw.config.get( 'wgCurRevisionId' ) === mw.config.get( 'wgRevisionId' );
+	this.requestInfo = config.requestInfo
+
 	ext.pageReadConfirmations.ConfirmationsPanel.super.call( this, Object.assign( {
 		expanded: false,
 		padded: false
@@ -54,45 +55,46 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 	this.versionLabel = new OO.ui.LabelWidget( {
 		label: ''
 	} );
-	this.oldRevisionWarning = new OO.ui.PopupButtonWidget( {
-		icon: 'alert',
-		framed: false,
-		label: mw.msg( 'page-read-confirmations-old-revision-warning-title' ),
-		invisibleLabel: true,
-		popup: {
-			$content: $( '<p>' ).text( mw.msg( 'page-read-confirmations-old-revision-warning-body' ) ),
-			padded: true,
-			align: 'force-left',
-			autoFlip: false
-		}
+	this.pendingMessage = new OO.ui.MessageWidget( {
+		inline: true,
+		type: this.pendingCount > 0 ? 'warning' : 'success',
+		label: new OO.ui.HtmlSnippet(
+			mw.msg( 'page-read-confirmations-pending-count', this.pendingCount, this.totalRequested )
+		),
+		classes: [ 'ext-page-read-confirmations-pending-message' ]
 	} );
-	this.oldRevisionWarning.$element.css( 'margin-left', '4px' );
-	this.oldRevisionWarning.$element.hide();
 
-	this.requestButton = new OO.ui.ButtonWidget( {
-		label: mw.msg( 'page-read-confirmations-request-confirmation-button' ),
-		flags: [ 'primary', 'progressive' ],
-		title: mw.msg( 'page-read-confirmations-request-confirmation-button-title' ),
+	this.cancelButton = new OO.ui.ButtonWidget( {
+		label: mw.msg( 'page-read-confirmations-cancel-request' ),
+		icon: 'trash',
 		framed: false,
-		classes: [ 'page-read-confirmations-request-confirmation-button' ]
+		flags: [ 'destructive' ],
+		classes: [ 'ext-page-read-confirmations-cancel-request' ]
 	} );
-	this.requestButton.connect( this, {
-		click: 'onRequestConfirmationClick'
-	} );
-	this.requestButton.$element.hide();
+	this.cancelButton.connect( this, { click: 'onCancelRequestClick' } );
 
-	this.$element.append( this.versionLabel.$element, this.oldRevisionWarning.$element, this.requestButton.$element );
-	await this.setRequestInfo();
-	this.$actionHeadingCnt = $( '<div>' );
-	this.$element.append( this.$actionHeadingCnt );
-	this.addActionHeading();
+	this.sendReminderButton = new OO.ui.ButtonWidget( {
+		label: mw.msg( 'page-read-confirmations-send-reminder' ),
+		framed: false,
+		flags: [ 'progressive' ]
+	} );
+	this.sendReminderButton.connect( this, { click: 'onSendReminderClick' } );
+
+	this.$element.append(
+		new OO.ui.HorizontalLayout( {
+			items: [
+				this.versionLabel,
+				this.cancelButton,
+			]
+		} ).$element
+	);
+	this.$element.append( this.pendingMessage.$element, this.sendReminderButton.$element );
+
+	this.renderRequestInfo( this.requestInfo );
 
 	this.confirmationStore = new OOJSPlus.ui.data.store.RemoteRestStore( {
 		path: 'page_read_confirmations/' + mw.config.get( 'wgArticleId' ),
 		pageSize: 20
-	} );
-	this.confirmationStore.connect( this, {
-		reload: 'onReload'
 	} );
 
 	this.grid = new OOJSPlus.ui.data.GridWidget( {
@@ -104,13 +106,6 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 				type: 'user',
 				showImage: true
 			},
-			prc_rev: {
-				headerText: mw.msg( 'page-read-confirmations-grid-column-read-version' ),
-				type: 'text',
-				valueParser: function ( value, row ) {
-					return new OO.ui.HtmlSnippet( row.revision_link || '-' );
-				}
-			},
 			prc_read_at: {
 				headerText: mw.msg( 'page-read-confirmations-grid-column-read-time' ),
 				type: 'text',
@@ -121,7 +116,6 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 			has_confirmed: {
 				headerText: mw.msg( 'page-read-confirmations-grid-column-status' ),
 				type: 'boolean',
-				invisibleLabel: true,
 				width: 40
 			}
 		}
@@ -134,116 +128,29 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 	this.$element.append( this.grid.$element );
 };
 
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.setRequestInfo = async function () {
-	const requestInfo = await ext.pageReadConfirmations.api.getRequestInfo( mw.config.get( 'wgArticleId' ) );
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.renderRequestInfo = function ( requestInfo ) {
 	this.pendingCount = 0;
-	if ( requestInfo ) {
-		const message = mw.msg( 'page-read-confirmations-request-info', requestInfo.version_link.anchor );
-		this.versionLabel.setLabel( new OO.ui.HtmlSnippet( message ) );
-		this.pendingCount = requestInfo.pending;
-		if ( requestInfo.is_current ) {
-			this.oldRevisionWarning.$element.hide();
-		} else {
-			this.oldRevisionWarning.$element.show();
-		}
-		this.requestButton.$element.show();
-		if ( this.pendingCount > 0 || requestInfo.is_current || !this.isOnLatestRev ) {
-			this.requestButton.$element.hide();
-		}
+	const message = mw.msg( 'page-read-confirmations-request-info', requestInfo.version_link.anchor );
+	this.versionLabel.setLabel( new OO.ui.HtmlSnippet( message ) );
+	this.pendingCount = requestInfo.pending;
+	this.readCount = requestInfo.read;
+	this.totalRequested = requestInfo.total;
+	this.pendingCount > 0 ? this.versionLabel.$element.show() : this.versionLabel.$element.hide();
+	this.cancelButton.setDisabled( this.pendingCount === 0 );
+	this.pendingCount > 0 ? this.cancelButton.$element.show() : this.cancelButton.$element.hide();
+	this.sendReminderButton.setDisabled( this.pendingCount === 0 );
+	this.pendingCount > 0 ? this.sendReminderButton.$element.show() : this.sendReminderButton.$element.hide();
+
+	if ( this.pendingCount === 0 ) {
+		this.pendingMessage.setLabel( mw.msg( 'page-read-confirmations-no-pending', requestInfo.version_label ) );
+		this.pendingMessage.setType( 'success' );
 	} else {
-		this.versionLabel.setLabel( mw.msg( 'page-read-confirmations-no-request-info' ) );
-		if ( this.isOnLatestRev ) {
-			this.requestButton.$element.show();
-		}
+		this.pendingMessage.setLabel( new OO.ui.HtmlSnippet(
+			mw.msg( 'page-read-confirmations-pending-count', this.pendingCount, this.totalRequested )
+		) );
+		this.pendingMessage.setType( 'warning' );
 	}
-};
-
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.addActionHeading = function () {
-	let actionItems;
-	if ( this.pendingCount ) {
-		this.sendReminderButton = new OO.ui.ButtonWidget( {
-			data: 'sendReminder',
-			label: mw.msg( 'page-read-confirmations-send-reminder' ),
-			framed: false
-		} );
-		this.sendReminderButton.connect( this, { click: 'onSendReminderClick' } );
-		const menuOptions = [];
-		if ( this.allowEditing ) {
-			menuOptions.push(
-				new OO.ui.MenuOptionWidget( {
-					icon: 'edit',
-					data: 'editAssignments',
-					label: mw.msg( 'page-read-confirmations-edit-assignments' )
-				} )
-			);
-		}
-		menuOptions.push(
-			new OO.ui.MenuOptionWidget( {
-				icon: 'trash',
-				data: 'cancelRequest',
-				label: mw.msg( 'page-read-confirmations-cancel-request' ),
-				flags: [ 'destructive' ]
-			} )
-		);
-
-		const additionalActionsButton = new OO.ui.ButtonMenuSelectWidget( {
-			icon: 'verticalEllipsis',
-			title: mw.msg( 'page-read-confirmations-more-actions' ),
-			framed: false,
-			$overlay: this.dialog.$overlay,
-			menu: {
-				items: menuOptions
-			}
-		} );
-		additionalActionsButton.getMenu().connect( this, {
-			choose: function ( item ) {
-				if ( item.getData() === 'editAssignments' ) {
-					this.onEditAssignmentsClick();
-				}
-				if ( item.getData() === 'cancelRequest' ) {
-					this.onCancelRequestClick( item );
-				}
-			}
-		} );
-		actionItems = [
-			this.sendReminderButton,
-			additionalActionsButton
-		]
-	} else if ( this.allowEditing ) {
-		const editAssignmentsButton = new OO.ui.ButtonWidget( {
-			data: 'editAssignments',
-			label: mw.msg( 'page-read-confirmations-edit-assignments' ),
-			framed: false
-		} )
-		editAssignmentsButton.connect( this, { click: 'onEditAssignmentsClick' } );
-		actionItems = [ editAssignmentsButton ];
-	}
-
-	this.actionHeading = new OO.ui.HorizontalLayout( {
-		items: [
-			new OO.ui.LabelWidget( {
-				label: new OO.ui.HtmlSnippet(
-					'<b>' +
-					this.pendingCount ?
-							mw.msg( 'page-read-confirmations-pending-count', this.pendingCount ) :
-							mw.msg( 'page-read-confirmations-no-pending' ) +
-					'</b>'
-				)
-			} ),
-			new OO.ui.ButtonGroupWidget( {
-				classes: [ 'ext-page-read-confirmations-actions' ],
-				items: actionItems
-			} )
-		]
-	} );
-
-	this.$actionHeadingCnt.html( this.actionHeading.$element );
-};
-
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.onReload = async function () {
-	await this.setRequestInfo();
-	this.addActionHeading();
-};
+}
 
 ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = function () {
 	this.confirm(
@@ -277,20 +184,6 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = fun
 		} );
 };
 
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.onEditAssignmentsClick = async function () {
-	await mw.loader.using( [ 'ext.pageReadConfirmations.assignments' ] );
-	const wm = OO.ui.getWindowManager();
-	const dialog = new ext.pageReadConfirmations.ui.AssignmentOnlyDialog(
-		{ assignmentsOnly: true }
-	);
-	wm.addWindows( [ dialog ] );
-	wm.openWindow( dialog ).closed.then( ( data ) => {
-		if ( data && data.action === 'save' ) {
-			this.confirmationStore.reload();
-		}
-	} );
-};
-
 ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = async function ( item ) {
 	this.confirm(
 		mw.msg( 'page-read-confirmations-confirm-cancel-request' ), {
@@ -315,41 +208,9 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = as
 				if ( !res.success ) {
 					throw new Error( 'API error' );
 				}
-				this.grid.store.reload();
+				this.emit( 'requestCancel' );
 			} catch ( e ) {
 				this.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
 			}
 		} );
 };
-
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.onRequestConfirmationClick = async function () {
-	this.confirm(
-		mw.msg( 'page-read-confirmations-confirm-request' ), {
-			actions: [
-				{
-					label: mw.msg( 'page-read-confirmations-action-cancel' ),
-					action: 'cancel'
-				},
-				{
-					label: mw.msg( 'page-read-confirmations-action-request' ),
-					flags: [ 'progressive' ],
-					action: 'accept'
-				}
-			],
-			size: 'medium'
-		} )
-		.done( async ( confirmed ) => {
-			if ( !confirmed ) {
-				return;
-			}
-			try {
-				const res = await ext.pageReadConfirmations.api.requestConfirmation( mw.config.get( 'wgArticleId' ) );
-				if ( !res.success ) {
-					throw new Error( 'API error' );
-				}
-				this.grid.store.reload();
-			} catch ( e ) {
-				this.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
-			}
-		} );
-}

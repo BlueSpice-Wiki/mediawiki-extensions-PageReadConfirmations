@@ -13,30 +13,41 @@ ext.pageReadConfirmations.ui.AssignmentDialog.static.title =
 
 ext.pageReadConfirmations.ui.AssignmentDialog.static.actions = [
 	{
-		action: 'assign',
-		label: mw.msg( 'page-read-confirmations-action-assign' ),
+		action: 'request',
+		label: mw.msg( 'page-read-confirmations-action-request' ),
 		flags: [ 'primary', 'progressive' ],
-		modes: [ 'assign' ]
+		modes: [ 'request' ]
+	},
+	{
+		action: 'save_assignments',
+		label: mw.msg( 'page-read-confirmations-action-save' ),
+		flags: [ 'primary', 'progressive' ],
+		modes: [ 'edit_assignments' ]
+	},
+	{
+		action: 'view_other',
+		label: mw.msg( 'page-read-assignments-has-another-request-button' ),
+		flags: [ 'primary', 'progressive' ],
+		modes: [ 'unable' ]
 	},
 	{
 		action: 'cancel',
 		icon: 'close',
-		modes: [ 'assign' ],
+		modes: [ 'request', 'manage', 'assign', 'unable' ],
 		title: mw.msg( 'page-read-confirmations-action-cancel' ),
 		flags: [ 'safe', 'close' ]
 	},
 	{
 		action: 'back',
 		icon: 'previous',
-		modes: [ 'confirmations' ],
+		modes: [ 'edit_assignments' ],
 		title: mw.msg( 'page-read-confirmations-action-previous' ),
 		flags: [ 'safe' ]
 	},
 	{
-		action: 'show_confirmations',
-		label: mw.msg( 'page-read-confirmations-action-show-confirmations' ),
-		modes: [ 'assign' ],
-		title: mw.msg( 'page-read-confirmations-action-cancel' )
+		action: 'edit_assignments',
+		label: mw.msg( 'page-read-confirmations-edit-assignments' ),
+		modes: [ 'manage' ],
 	}
 ];
 
@@ -44,42 +55,80 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getSetupProcess = functi
 	return ext.pageReadConfirmations.ui.AssignmentDialog.parent.prototype.getSetupProcess.call( this, data )
 		.next( function () {
 			// Prevent flickering, disable all actions before init is done
-			this.switchMode( 'assign' );
+			this.actions.setMode( 'request' );
 		}, this );
 };
 
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function () {
 	ext.pageReadConfirmations.ui.AssignmentDialog.super.prototype.initialize.call( this );
-	this.actions.setAbilities( { assign: false } );
+	this.actions.setAbilities( { request: false, save_assignments: false, edit_assignments: false } );
 	this.confirmWindowManager = new OO.ui.WindowManager();
 	$( OO.ui.getTeleportTarget() ).append( this.confirmWindowManager.$element );
 	this.confirmWindowManager.addWindows( [ new OO.ui.MessageDialog() ] );
 
+	const initPanels = async () => {
+		try {
+			this.request = await ext.pageReadConfirmations.api.getRequestInfo( mw.config.get( 'wgArticleId' ) );
+			if (
+				this.request &&
+				mw.config.get( 'wgRevisionId' ) !== this.request.revision &&
+				this.request.pending > 0
+			) {
+				this.unablePanel = new OO.ui.PanelLayout( {
+					expanded: false,
+					padded: true,
+				} );
 
-	this.assignmentPanel = new ext.pageReadConfirmations.ui.AssignmentPanel(
-		{ padded: true, dialog: this }
-	);
-	this.assignmentPanel.connect( this, {
-		loaded: function () {
-			this.updateSize();
-		},
-		change: 'setDirty',
-		error: function () {
-			this.actions.setAbilities( { assign: false } );
+				this.unablePanel.$element.append(
+					new OO.ui.MessageWidget( {
+						label: mw.msg( 'page-read-assignments-has-another-request-label-extended' ),
+						type: 'warning',
+					} ).$element
+				);
+				this.$body.append( this.unablePanel.$element );
+				this.switchMode( 'unable' );
+				return;
+			}
+ 		} catch ( e ) {
+			this.request = null;
 		}
-	} );
 
-	this.confirmationPanel = new ext.pageReadConfirmations.ConfirmationsPanel( {
-		padded: true,
-		dialog: this,
-		// Prevent editing assignments from confirmation dialog, as we are already in assignment editor
-		allowEditing: false
-	} );
-	this.confirmationPanel.setWindowManager( this.confirmWindowManager );
-	this.confirmationPanel.init();
-	this.confirmationPanel.$element.hide();
+		this.assignmentPanel = new ext.pageReadConfirmations.ui.AssignmentPanel(
+			{ padded: true, dialog: this }
+		);
+		this.assignmentPanel.connect( this, {
+			loaded: function () {
+				this.updateSize();
+			},
+			change: 'setDirty',
+			error: function () {
+				this.actions.setAbilities( { request: false } );
+			}
+		} );
 
-	this.$body.append( this.assignmentPanel.$element, this.confirmationPanel.$element );
+		this.$body.append( this.assignmentPanel.$element );
+
+		if ( this.request ) {
+			this.confirmationPanel = new ext.pageReadConfirmations.ConfirmationsPanel( {
+				padded: true,
+				dialog: this,
+				// Prevent editing assignments from confirmation dialog, as we are already in assignment editor
+				allowEditing: false,
+				requestInfo: this.request
+			} );
+			this.confirmationPanel.connect( this, {
+				requestCancel: () => {
+					window.location.reload();
+				}
+			} );
+			this.confirmationPanel.setWindowManager( this.confirmWindowManager );
+			this.confirmationPanel.init();
+			this.$body.append( this.confirmationPanel.$element );
+			this.switchMode( 'manage' );
+		}
+	}
+
+	initPanels();
 };
 
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getTeardownProcess = function ( data ) {
@@ -94,10 +143,14 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getTeardownProcess = fun
 
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.switchMode = function ( mode ) {
 	this.actions.setMode( mode );
-	if ( mode === 'assign' ) {
+	if ( mode === 'request' || mode === 'edit_assignments' ) {
+		this.setSize( 'large' );
 		this.assignmentPanel.$element.show();
 		this.confirmationPanel.$element.hide();
+	} else if ( mode === 'unable' ) {
+		this.setSize( 'large' );
 	} else {
+		this.setSize( 'larger' );
 		this.assignmentPanel.$element.hide();
 		this.confirmationPanel.$element.show();
 	}
@@ -108,81 +161,100 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 	return ext.pageReadConfirmations.ui.AssignmentDialog.super.prototype.getActionProcess
 		.call( this, action )
 		.next( () => {
-			if ( action === 'show_confirmations' ) {
-				if ( !this.dirty ) {
-					this.switchMode( 'confirmations' );
-					return;
-				}
-				const dfd = $.Deferred();
-				// Open in dedicated win manager, to allow opening window-in-window
-				this.confirmWindowManager.openWindow( 'message', {
-					message: mw.msg( 'page-read-confirmations-confirm-assign-dirty' ),
-					actions: [
-						{
-							label: mw.msg( 'page-read-confirmations-action-cancel' ),
-							action: 'cancel'
-						},
-						{
-							label: mw.msg( 'page-read-confirmations-action-assign' ),
-							flags: [ 'progressive' ],
-							action: 'accept'
-						}
-					],
-					size: 'medium'
-				} ).closed
-					.then( ( data ) => !!( data && data.action === 'accept' ) )
-					.done( ( confirmed ) => {
-						if ( !confirmed ) {
-							dfd.resolve();
-							return;
-						}
-						this.pushPending();
-						this.saveAssignments()
-							.then( () => {
-								this.setDirty( false );
-								this.assignmentPanel.updateOriginalValue();
-								this.confirmationPanel.init( true );
-								this.switchMode( 'confirmations' );
-								this.popPending();
-								dfd.resolve();
-							} ).catch( () => {
-							this.popPending();
-							dfd.reject( new OO.ui.Error( mw.msg( 'page-read-confirmations-error' ) ) );
-						} );
-					} )
-					.fail( () => {
-						dfd.reject( new OO.ui.Error( mw.msg( 'page-read-confirmations-error' ) ) );
-					} );
-				return dfd.promise();
-			}
-			if ( action === 'back' ) {
-				this.switchMode( 'assign' );
-			}
-			if ( action === 'assign' ) {
+			if ( action === 'request' ) {
 				const dfd = $.Deferred();
 
 				this.pushPending();
-				this.saveAssignments()
+				this.saveAssignments( true )
 					.then( () => {
 						this.close( { action: 'save' } );
+						this.get
 					} ).catch( () => {
+					this.popPending();
+					dfd.reject( new OO.ui.Error( mw.msg( 'page-read-confirmations-error' ) ) );
+				} );
+				return dfd.promise();
+			}
+
+			if ( action === 'cancel' ) {
+				this.close();
+			}
+
+			if ( action === 'edit_assignments' ) {
+				this.switchMode( 'edit_assignments' );
+			}
+
+			if ( action === 'save_assignments' ) {
+				const dfd = $.Deferred();
+
+				this.pushPending();
+				this.saveAssignments( false )
+					.then( () => {
+						ext.pageReadConfirmations.api.getRequestInfo( mw.config.get( 'wgArticleId' ) )
+							.then( ( requestInfo ) => {
+								this.request = requestInfo;
+								this.confirmationPanel.renderRequestInfo( requestInfo );
+								this.confirmationPanel.confirmationStore.reload();
+								this.switchMode( 'manage' );
+								this.popPending();
+								dfd.resolve();
+							} )
+					} )
+					.catch( () => {
 						this.popPending();
 						dfd.reject( new OO.ui.Error( mw.msg( 'page-read-confirmations-error' ) ) );
 					} );
 				return dfd.promise();
 			}
-			if ( action === 'cancel' ) {
-				this.close();
+
+			if ( action === 'back' ) {
+				if ( this.dirty ) {
+					this.confirmWindowManager.openWindow( 'message', {
+						message: mw.msg( 'page-read-confirmations-confirm-assign-dirty' ),
+						actions: [
+							{
+								label: mw.msg( 'page-read-confirmations-action-discard' ),
+								flags: [ 'destructive' ],
+								action: 'accept'
+							},
+							{
+								label: mw.msg( 'page-read-confirmations-action-cancel' ),
+								action: 'cancel'
+							}
+						],
+						size: 'medium'
+					} ).closed
+						.then( ( data ) => !!( data && data.action === 'accept' ) )
+						.done( ( confirmed ) => {
+							if ( !confirmed ) {
+								return;
+							}
+							//this.assignmentPanel.resetValue();
+							this.setDirty( false );
+							this.switchMode( 'manage' );
+						} )
+				} else {
+					this.switchMode( 'manage' );
+				}
+			}
+
+			if ( action === 'view_other' ) {
+				window.location.href = mw.Title.newFromText( mw.config.get( 'wgPageName' ) )
+					.getUrl( { oldid: this.request.revision } );
 			}
 		}, this );
 };
 
-ext.pageReadConfirmations.ui.AssignmentDialog.prototype.saveAssignments = function () {
+ext.pageReadConfirmations.ui.AssignmentDialog.prototype.saveAssignments = function ( shouldRequest ) {
 	const value = this.assignmentPanel.getValue();
-	return ext.pageReadConfirmations.api.storeAssignment( mw.config.get( 'wgPageName' ), value, true );
+	const rev = shouldRequest ? mw.config.get( 'wgRevisionId' ) : null;
+	return ext.pageReadConfirmations.api.storeAssignment( mw.config.get( 'wgPageName' ), value, rev );
 };
 
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.setDirty = function ( dirty ) {
 	this.dirty = dirty
-	this.actions.setAbilities( { assign: dirty } );
+	this.actions.setAbilities( {
+		save_assignments: dirty,
+		request: this.assignmentPanel.getValue().length > 0
+	} );
 };
