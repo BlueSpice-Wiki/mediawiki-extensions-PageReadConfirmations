@@ -4,7 +4,6 @@ namespace MediaWiki\Extension\PageReadConfirmations\Integration\MetaItemProvider
 
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationManager;
-use MediaWiki\Html\Html;
 use MediaWiki\Message\Message;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Revision\RevisionLookup;
@@ -13,7 +12,6 @@ use MediaWiki\Title\Title;
 use MWStake\MediaWiki\Component\CommonUserInterface\Component\Literal;
 use OOUI\ButtonWidget;
 use OOUI\HorizontalLayout;
-use OOUI\IconWidget;
 use OOUI\LabelWidget;
 
 class ReadConfirmationsTool extends Literal {
@@ -113,7 +111,9 @@ class ReadConfirmationsTool extends Literal {
 				}
 			} elseif ( $this->mustReadAnother ) {
 				$this->output->addModules( [ 'ext.pageReadConfirmations.anotherRequestedPopup' ] );
-				$mustReadAnotherButton->setLabel( Message::newFromKey( 'page-read-assignments-read-another-version-label' )->text() );
+				$mustReadAnotherButton->setLabel(
+					Message::newFromKey( 'page-read-assignments-read-another-version-label' )->text()
+				);
 				$html->appendContent( $mustReadAnotherButton );
 			}
 			return $html->toString();

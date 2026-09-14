@@ -35,7 +35,7 @@ ext.pageReadConfirmations.ui.AssignmentPanel = function ( config ) {
 		new OO.ui.FieldLayout( this.userGroupPicker, {
 			label: mw.msg( 'page-read-confirmations-assign-instruction' ),
 			align: 'top'
-		} ).$element,
+		} ).$element
 	);
 
 	this.userGroupPicker.setDisabled( true );
@@ -46,7 +46,9 @@ OO.inheritClass( ext.pageReadConfirmations.ui.AssignmentPanel, OO.ui.PanelLayout
 
 ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async function () {
 	try {
-		const assignments = await ext.pageReadConfirmations.api.getAssignments( mw.config.get( 'wgArticleId' ) );
+		const assignments = await ext.pageReadConfirmations.api.getAssignments(
+			mw.config.get( 'wgArticleId' )
+		);
 		const users = [];
 		const groups = [];
 		for ( const assignment of assignments ) {
@@ -76,6 +78,7 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 };
 
 ext.pageReadConfirmations.ui.AssignmentPanel.prototype.resetValues = function () {
+
 	this.userGroupPicker.setValue( this.orignalValue );
 };
 

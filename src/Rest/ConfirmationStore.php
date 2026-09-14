@@ -49,7 +49,8 @@ class ConfirmationStore extends QueryStore {
 	 */
 	protected function getStore(): IStore {
 		$user = RequestContext::getMain()->getUser();
-		$title = $this->titleFactory->newFromID( $this->getValidatedParams()['page'] );
+		$params = $this->getValidatedParams();
+		$title = $this->titleFactory->newFromID( $params['page'] );
 		if ( !$title || !$title->exists() ) {
 			throw new HttpException( 'Page not found', 404 );
 		}
@@ -57,7 +58,7 @@ class ConfirmationStore extends QueryStore {
 			throw new HttpException( 'permissiondenied', 403 );
 		}
 		return new Store(
-			$title, $user, $this->confirmationManager, $this->language,
+			$title, $params['revision'] ?? null, $user, $this->confirmationManager, $this->language,
 			$this->linkRenderer, $this->revisionLookup
 		);
 	}
@@ -71,6 +72,11 @@ class ConfirmationStore extends QueryStore {
 				static::PARAM_SOURCE => 'path',
 				ParamValidator::PARAM_TYPE => 'integer',
 				ParamValidator::PARAM_REQUIRED => true,
+			],
+			'revision' => [
+				static::PARAM_SOURCE => 'query',
+				ParamValidator::PARAM_TYPE => 'integer',
+				ParamValidator::PARAM_REQUIRED => false
 			]
 		];
 	}

@@ -83,5 +83,6 @@
 	"page-read-confirmations-ns-setting-help": "Create read confirmations for pages",
 	"page-read-assignments-read-another-version-label": "Confirmation requested",
 	"page-read-assignments-has-another-request-button": "View version",
-	"page-read-assignments-has-another-request-label-extended": "You cannot request read confirmation on this version of the page. An active read confirmation is ongoing for another version of this page. To request read confirmation on this version, first cancel confirmation for version of the page where it is currently running."
+	"page-read-assignments-has-another-request-label-extended": "You cannot request read confirmation on this version of the page. An active read confirmation is ongoing for another version of this page. To request read confirmation on this version, first cancel confirmation for version of the page where it is currently running.",
+	"page-read-confirmations-action-discard": "Discard"
 }

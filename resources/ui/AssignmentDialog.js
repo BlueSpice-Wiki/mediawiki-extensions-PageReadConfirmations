@@ -33,7 +33,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.static.actions = [
 	{
 		action: 'cancel',
 		icon: 'close',
-		modes: [ 'request', 'manage', 'assign', 'unable' ],
+		modes: [ 'request', 'manage', 'assign', 'unable', 'history' ],
 		title: mw.msg( 'page-read-confirmations-action-cancel' ),
 		flags: [ 'safe', 'close' ]
 	},
@@ -68,11 +68,13 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 
 	const initPanels = async () => {
 		try {
-			this.request = await ext.pageReadConfirmations.api.getRequestInfo( mw.config.get( 'wgArticleId' ) );
+			this.request = await ext.pageReadConfirmations.api.getRequestInfo(
+				mw.config.get( 'wgArticleId' ),
+				mw.config.get( 'wgRevisionId' )
+			);
 			if (
 				this.request &&
-				mw.config.get( 'wgRevisionId' ) !== this.request.revision &&
-				this.request.pending > 0
+				this.request.another_active
 			) {
 				this.unablePanel = new OO.ui.PanelLayout( {
 					expanded: false,
@@ -88,6 +90,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 				this.$body.append( this.unablePanel.$element );
 				this.switchMode( 'unable' );
 				return;
+
 			}
  		} catch ( e ) {
 			this.request = null;
@@ -124,7 +127,11 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 			this.confirmationPanel.setWindowManager( this.confirmWindowManager );
 			this.confirmationPanel.init();
 			this.$body.append( this.confirmationPanel.$element );
-			this.switchMode( 'manage' );
+			if ( this.request.is_active ) {
+				this.switchMode( 'manage' );
+			} else {
+				this.switchMode( 'history' );
+			}
 		}
 	}
 
@@ -165,7 +172,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 				const dfd = $.Deferred();
 
 				this.pushPending();
-				this.saveAssignments( true )
+				this.saveAssignments()
 					.then( () => {
 						this.close( { action: 'save' } );
 						this.get
@@ -188,10 +195,14 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 				const dfd = $.Deferred();
 
 				this.pushPending();
-				this.saveAssignments( false )
+				this.saveAssignments()
 					.then( () => {
-						ext.pageReadConfirmations.api.getRequestInfo( mw.config.get( 'wgArticleId' ) )
+						ext.pageReadConfirmations.api.getRequestInfo(
+							mw.config.get( 'wgArticleId' ),
+							mw.config.get( 'wgRevisionId' )
+						)
 							.then( ( requestInfo ) => {
+								this.assignmentPanel.updateOriginalValue();
 								this.request = requestInfo;
 								this.confirmationPanel.renderRequestInfo( requestInfo );
 								this.confirmationPanel.confirmationStore.reload();
@@ -229,7 +240,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 							if ( !confirmed ) {
 								return;
 							}
-							//this.assignmentPanel.resetValue();
+							this.assignmentPanel.resetValues();
 							this.setDirty( false );
 							this.switchMode( 'manage' );
 						} )
@@ -240,14 +251,14 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 
 			if ( action === 'view_other' ) {
 				window.location.href = mw.Title.newFromText( mw.config.get( 'wgPageName' ) )
-					.getUrl( { oldid: this.request.revision } );
+					.getUrl( { oldid: this.request.another_active } );
 			}
 		}, this );
 };
 
-ext.pageReadConfirmations.ui.AssignmentDialog.prototype.saveAssignments = function ( shouldRequest ) {
+ext.pageReadConfirmations.ui.AssignmentDialog.prototype.saveAssignments = function () {
 	const value = this.assignmentPanel.getValue();
-	const rev = shouldRequest ? mw.config.get( 'wgRevisionId' ) : null;
+	const rev = mw.config.get( 'wgRevisionId' );
 	return ext.pageReadConfirmations.api.storeAssignment( mw.config.get( 'wgPageName' ), value, rev );
 };
 

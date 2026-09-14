@@ -35,7 +35,8 @@ return [
 			$services->getLinkRenderer(),
 			new ConfirmationLogger( LoggerFactory::getInstance( 'PageReadConfirmations' ) ),
 			$services->getService( 'MWStake.Notifier' ),
-			$services->getMainConfig()
+			$services->getMainConfig(),
+			$services->getUserFactory()
 		);
 	},
 	'PageReadConfirmations._AutomaticAssigner' => static function ( MediaWikiServices $services ) {

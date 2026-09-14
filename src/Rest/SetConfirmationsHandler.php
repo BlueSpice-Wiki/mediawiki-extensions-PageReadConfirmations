@@ -61,11 +61,9 @@ class SetConfirmationsHandler extends SimpleHandler {
 		}
 
 		if ( $revision ) {
-			if ( !$this->confirmationManager->getRequestedRevisionId( $title ) ) {
-				$this->confirmationManager->requestRevisionConfirmation(
-					$title, $revision, RequestContext::getMain()->getUser()
-				);
-			}
+			$this->confirmationManager->requestRevisionConfirmation(
+				$title, $revision, RequestContext::getMain()->getUser()
+			);
 		}
 
 		return [

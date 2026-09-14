@@ -93,7 +93,9 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 	this.renderRequestInfo( this.requestInfo );
 
 	this.confirmationStore = new OOJSPlus.ui.data.store.RemoteRestStore( {
-		path: 'page_read_confirmations/' + mw.config.get( 'wgArticleId' ),
+		path: 'page_read_confirmations/' +
+			mw.config.get( 'wgArticleId' ) +
+			'?revision=' + mw.config.get( 'wgRevisionId' ),
 		pageSize: 20
 	} );
 
@@ -142,7 +144,9 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.renderRequestInfo = funct
 	this.pendingCount > 0 ? this.sendReminderButton.$element.show() : this.sendReminderButton.$element.hide();
 
 	if ( this.pendingCount === 0 ) {
-		this.pendingMessage.setLabel( mw.msg( 'page-read-confirmations-no-pending', requestInfo.version_label ) );
+		this.pendingMessage.setLabel( new OO.ui.HtmlSnippet(
+			mw.msg( 'page-read-confirmations-no-pending', requestInfo.version_link.anchor )
+		) );
 		this.pendingMessage.setType( 'success' );
 	} else {
 		this.pendingMessage.setLabel( new OO.ui.HtmlSnippet(

@@ -14,6 +14,7 @@ class Reader extends \MWStake\MediaWiki\Component\DataStore\Reader {
 	/**
 	 *
 	 * @param PageIdentity $forPage
+	 * @param int|null $forRevision
 	 * @param UserIdentity $forUser
 	 * @param ReadConfirmationManager $confirmationManager
 	 * @param Language $language
@@ -22,6 +23,7 @@ class Reader extends \MWStake\MediaWiki\Component\DataStore\Reader {
 	 */
 	public function __construct(
 		private readonly PageIdentity $forPage,
+		private readonly ?int $forRevision,
 		private readonly UserIdentity $forUser,
 		private readonly ReadConfirmationManager $confirmationManager,
 		private readonly Language $language,
@@ -36,7 +38,9 @@ class Reader extends \MWStake\MediaWiki\Component\DataStore\Reader {
 	 * @return PrimaryDataProvider
 	 */
 	protected function makePrimaryDataProvider( $params ) {
-		return new PrimaryDataProvider( $this->forPage, $this->confirmationManager, $this->revisionLookup );
+		return new PrimaryDataProvider(
+			$this->forPage, $this->forRevision, $this->confirmationManager, $this->revisionLookup
+		);
 	}
 
 	/**

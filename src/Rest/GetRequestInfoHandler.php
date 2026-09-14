@@ -50,7 +50,7 @@ class GetRequestInfoHandler extends SimpleHandler {
 		}
 
 		return $this->getResponseFactory()->createJson(
-			$this->confirmationManager->getRequestInfo( $title )
+			$this->confirmationManager->getRequestInfo( $title, $params['revision'] )
 		);
 	}
 
@@ -63,6 +63,11 @@ class GetRequestInfoHandler extends SimpleHandler {
 				static::PARAM_SOURCE => 'path',
 				ParamValidator::PARAM_TYPE => 'integer',
 				ParamValidator::PARAM_REQUIRED => true,
+			],
+			'revision' => [
+				static::PARAM_SOURCE => 'query',
+				ParamValidator::PARAM_TYPE => 'integer',
+				ParamValidator::PARAM_REQUIRED => true
 			]
 		];
 	}

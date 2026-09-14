@@ -14,6 +14,6 @@ class SetupPageInfoPanelModule implements StandardDialogsRegisterPageInfoPanelMo
 	public function onStandardDialogsRegisterPageInfoPanelModules(
 		&$modules, ResourceLoaderContext $context, Config $config
 	): void {
-		$modules[] = "ext.pageReadConfirmations.standardDialogs.confirmationPage";
+		$modules[] = "ext.pageReadConfirmations.standardDialogs.readersPage";
 	}
 }
