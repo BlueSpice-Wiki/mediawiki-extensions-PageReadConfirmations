@@ -20,6 +20,7 @@ use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
+use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use MWStake\MediaWiki\Component\Events\Notifier;
@@ -37,6 +38,7 @@ class ReadConfirmationManager {
 	 * @param ConfirmationLogger $logger
 	 * @param Notifier $notifier
 	 * @param Config $config
+	 * @param UserFactory $userFactory
 	 */
 	public function __construct(
 		private readonly ReadConfirmationStore $confirmationStore,
@@ -48,7 +50,8 @@ class ReadConfirmationManager {
 		private readonly LinkRenderer $linkRenderer,
 		private readonly ConfirmationLogger $logger,
 		private readonly Notifier $notifier,
-		private readonly Config $config
+		private readonly Config $config,
+		private readonly UserFactory $userFactory
 	) {
 	}
 
@@ -84,6 +87,26 @@ class ReadConfirmationManager {
 			wikiId: $row->prc_wiki_id,
 			readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', $row->prc_read_at ) : null
 		);
+	}
+
+	/**
+	 * @param RevisionRecord $revision
+	 * @return array
+	 */
+	public function getConfirmationsForRevision( RevisionRecord $revision ): array {
+		$query = $this->confirmationStore->newQueryBuilder()
+			->forRevision( $revision );
+		$rows = $query->fetch();
+		$confirmations = [];
+		foreach ( $rows as $row ) {
+			$confirmations[] = new ReadConfirmationEntity(
+				assignee: $this->userFactory->newFromId( $row->prc_user ),
+				revision: $revision,
+				wikiId: $row->prc_wiki_id,
+				readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', $row->prc_read_at ) : null
+			);
+		}
+		return $confirmations;
 	}
 
 	/**
@@ -326,31 +349,58 @@ class ReadConfirmationManager {
 
 	/**
 	 * @param PageIdentity $page
+	 * @param int|null $forRevision
 	 * @return array|null
 	 */
-	public function getRequestInfo( PageIdentity $page ): ?array {
-		$requestedRev = $this->getRequestedRevisionId( $page );
-		if ( !$requestedRev ) {
-			return null;
-		}
-		$requestedRev = $this->revisionLookup->getRevisionById( $requestedRev );
-		if ( !$requestedRev ) {
-			return null;
-		}
-		$assignees = $this->assignmentStore->getAssignees( $page );
+	public function getRequestInfo( PageIdentity $page, ?int $forRevision ): ?array {
+		$forRevision = $forRevision ?
+			$this->revisionLookup->getRevisionById( $forRevision ) :
+			$this->revisionLookup->getRevisionByTitle( $page );
+		$requestedRev = $this->getRequestedRevisionId( $page ) ?? 0;
+
 		$pending = $read = 0;
-		foreach ( $assignees as $assignee ) {
-			$confirmation = $this->getConfirmation( $assignee, $requestedRev );
-			if ( $confirmation && $confirmation->revision->getId() === $requestedRev->getId() ) {
-				$read++;
-			} else {
-				$pending++;
+		$requestingAnother = false;
+		if ( !$requestedRev || $requestedRev !== $forRevision->getId() ) {
+			$requestingAnother = true;
+		}
+
+		$requestedRev = $this->revisionLookup->getRevisionById( $requestedRev );
+		if ( $requestedRev ) {
+			$assignees = $this->assignmentStore->getAssignees( $page );
+			foreach ( $assignees as $assignee ) {
+				$confirmation = $this->getConfirmation( $assignee, $requestedRev );
+				if ( $confirmation && $confirmation->revision->getId() === $requestedRev->getId() ) {
+					$read++;
+				} else {
+					$pending++;
+				}
 			}
 		}
-		$revisionTimestamp = $this->language->timeanddate( $requestedRev->getTimestamp() );
-		$linkQuery = $requestedRev->isCurrent() ? [] : [ 'oldid' => $requestedRev->getId() ];
+
+		if ( $requestingAnother ) {
+			// Get read count for that other revision
+			$read = $this->getConfirmedCount( $forRevision );
+			if ( !$read ) {
+				if ( $pending ) {
+					// Nobody read this revision, but there is active one, we cannot start here
+					return [
+						'another_active' => $requestedRev->getId(),
+					];
+				} else {
+					// Nobody read this, and no other active one, allow starting on this rev
+					return null;
+				}
+			}
+			$pending = 0;
+			// Somebody read this revision, show list of readers
+		}
+
+		$revisionTimestamp = $this->language->timeanddate( $forRevision->getTimestamp() );
+		$linkQuery = $forRevision->isCurrent() ? [] : [ 'oldid' => $forRevision->getId() ];
 		$data = [
-			'revision' => $requestedRev->getId(),
+			'revision' => $forRevision->getId(),
+			'revision_timestamp' => $forRevision->getTimestamp(),
+			'version_label' => $revisionTimestamp,
 			'version_link' => [
 				'text' => $revisionTimestamp,
 				'query' => $linkQuery,
@@ -358,11 +408,42 @@ class ReadConfirmationManager {
 			],
 			'pending' => $pending,
 			'read' => $read,
-			'is_current' => $requestedRev->isCurrent()
+			'total' => $pending + $read,
+			'is_active' => $requestedRev?->getId() === $forRevision->getId(),
 		];
 
 		$this->hookContainer->run( 'PageReadConfirmationGetRequestInfo', [ $page, &$data ] );
 		return $data;
+	}
+
+	/**
+	 * @param PageIdentity $page
+	 * @return array
+	 */
+	public function getLatestConfirmations( PageIdentity $page ): array {
+		$query = $this->confirmationStore->newQueryBuilder()
+			->forPage( $page )
+			->conds( [ 'prc_read_at IS NOT NULL' ] )
+			->setOrderBy( [ 'prc_rev' ], 'DESC' );
+
+		$res = $query->fetch();
+		$confirmations = [];
+		$users = [];
+		foreach ( $res as $row ) {
+			if ( isset( $users[$row->prc_user] ) ) {
+				continue;
+			}
+			$user = $this->userFactory->newFromId( $row->prc_user );
+			$users[$row->prc_user] = $user;
+			$confirmations[] = new ReadConfirmationEntity(
+				assignee: $user,
+				revision: $this->revisionLookup->getRevisionById( $row->prc_rev ),
+				wikiId: $row->prc_wiki_id,
+				readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', $row->prc_read_at ) : null
+			);
+		}
+
+		return $confirmations;
 	}
 
 	/**
@@ -439,4 +520,16 @@ class ReadConfirmationManager {
 			$pending
 		);
 	}
+
+	/**
+	 * @param RevisionRecord $requestedRev
+	 * @return int
+	 */
+	private function getConfirmedCount( RevisionRecord $requestedRev ): int {
+		$query = $this->confirmationStore->newQueryBuilder()
+			->forRevision( $requestedRev );
+		$rows = $query->fetch();
+		return $rows->numRows();
+	}
+
 }

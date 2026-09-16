@@ -43,15 +43,17 @@ class SecondaryDataProvider implements ISecondaryDataProvider {
 			if ( $revisionId ) {
 				$revision = $this->revisionLookup->getRevisionById( $revisionId );
 				if ( $revision ) {
+					$revisionTimestampText = $this->language->timeanddate( $revision->getTimestamp() );
 					$dataSet->set(
 						Record::READ_REVISION_LINK,
 						$this->linkRenderer->makeKnownLink(
 							$this->forPage,
-							$this->language->timeanddate( $revision->getTimestamp() ),
+							$revisionTimestampText,
 							[],
 							[ 'oldid' => $revisionId ]
 						)
 					);
+					$dataSet->set( Record::READ_REVISION_TEXT, $revisionTimestampText );
 				}
 
 			}

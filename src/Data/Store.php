@@ -16,6 +16,7 @@ readonly class Store implements IStore {
 	/**
 	 *
 	 * @param PageIdentity $forPage
+	 * @param int|null $forRevision
 	 * @param UserIdentity $forUser
 	 * @param ReadConfirmationManager $confirmationManager
 	 * @param Language $language
@@ -24,6 +25,7 @@ readonly class Store implements IStore {
 	 */
 	public function __construct(
 		private PageIdentity $forPage,
+		private ?int $forRevision,
 		private UserIdentity $forUser,
 		private ReadConfirmationManager $confirmationManager,
 		private Language $language,
@@ -35,7 +37,7 @@ readonly class Store implements IStore {
 	/** @inheritDoc */
 	public function getReader() {
 		return new Reader(
-			$this->forPage, $this->forUser, $this->confirmationManager, $this->language,
+			$this->forPage, $this->forRevision, $this->forUser, $this->confirmationManager, $this->language,
 			$this->linkRenderer, $this->revisionLookup
 		);
 	}

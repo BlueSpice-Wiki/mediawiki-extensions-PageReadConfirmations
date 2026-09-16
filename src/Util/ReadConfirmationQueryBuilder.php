@@ -97,7 +97,6 @@ class ReadConfirmationQueryBuilder {
 	public function fetch(): IResultWrapper {
 		$this->assertWikIdCondition();
 
-		$q = $this->getSelectAllQuery()->getSQL();
 		return $this->getSelectAllQuery()->fetchResultSet();
 	}
 

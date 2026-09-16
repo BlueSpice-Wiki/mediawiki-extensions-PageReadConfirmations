@@ -141,13 +141,20 @@
 				"styles.less"
 			]
 		},
-		"ext.pageReadConfirmations.standardDialogs.confirmationPage": {
+		"ext.pageReadConfirmations.standardDialogs.readersPage": {
 			"scripts": [
-				"ui/AssignmentOnlyDialog.js",
-				"ui/ConfirmationsPage.js"
+				"ui/ReadersPanel.js",
+				"ui/ReadersPage.js"
 			],
 			"dependencies": [
-				"ext.pageReadConfirmations.confirmationPanel"
+				"ext.pageReadConfirmations.bootstrap"
+			],
+			"messages": [
+				"page-read-confirmations-label",
+				"page-read-confirmations-grid-column-user",
+				"page-read-confirmations-grid-column-read-version",
+				"page-read-confirmations-grid-column-read-time",
+				"page-read-confirmations-grid-column-status"
 			]
 		},
 		"ext.pageReadConfirmations.assignments": {
@@ -166,7 +173,11 @@
 				"page-read-confirmations-assignment-dialog-title",
 				"page-read-confirmations-action-assign",
 				"page-read-confirmations-confirm-assign-dirty",
-				"page-read-confirmations-action-show-confirmations"
+				"page-read-confirmations-action-show-confirmations",
+				"page-read-confirmations-action-save",
+				"page-read-assignments-has-another-request-label-extended",
+				"page-read-assignments-has-another-request-button",
+				"page-read-confirmations-action-discard"
 			]
 		},
 		"ext.pageReadConfirmations.workflows.editor": {
@@ -189,6 +200,21 @@
 				"ext.pageReadConfirmations.bootstrap",
 				"ext.workflows.editor.inspector.bootstrap",
 				"ext.workflows.editor.customElements.bootstrap"
+			]
+		},
+		"ext.pageReadConfirmations.anotherRequestedPopup": {
+			"scripts": [
+				"anotherRequestedPopup.js"
+			],
+			"styles": [
+				"anotherRequestedPopup.css"
+			],
+			"dependencies": [
+				"ext.pageReadConfirmations.bootstrap"
+			],
+			"messages": [
+				"page-read-assignments-has-another-request-label",
+				"page-read-assignments-has-another-request-button"
 			]
 		}
 	},

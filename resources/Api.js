@@ -1,12 +1,12 @@
 ext.pageReadConfirmations.api =  {
-	getAssignments: async ( pageId ) => {
+	getAssignments: async ( pageId, revisionId ) => {
 		return ext.pageReadConfirmations.api._ajax( '/assignments/' + pageId, {}, 'GET' );
 	},
-	storeAssignment: async ( page, assignments, requestCurrentRevision ) => {
+	storeAssignment: async ( page, assignments, requestRevision ) => {
 		return ext.pageReadConfirmations.api._ajax( '/set_confirmations', {
 			page: page,
 			assignments: JSON.stringify( assignments ),
-			requestCurrentRevision: requestCurrentRevision || false
+			requestRevision: requestRevision || 0
 		}, 'POST' );
 	},
 	confirmRead: async ( revision ) => {
@@ -20,8 +20,10 @@ ext.pageReadConfirmations.api =  {
 			user: user
 		}, 'POST' );
 	},
-	getRequestInfo: async ( pageId ) => {
-		return ext.pageReadConfirmations.api._ajax( '/request_info/' + pageId, {}, 'GET' );
+	getRequestInfo: async ( pageId, revision ) => {
+		return ext.pageReadConfirmations.api._ajax( '/request_info/' + pageId, {
+			revision: revision
+		}, 'GET' );
 	},
 	cancelRequest: async ( page ) => {
 		return ext.pageReadConfirmations.api._ajax( '/cancel_request', {

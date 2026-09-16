@@ -4,13 +4,15 @@ namespace MediaWiki\Extension\PageReadConfirmations\Integration\MetaItemProvider
 
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationManager;
-use MediaWiki\Html\Html;
 use MediaWiki\Message\Message;
+use MediaWiki\Output\OutputPage;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Title\Title;
 use MWStake\MediaWiki\Component\CommonUserInterface\Component\Literal;
 use OOUI\ButtonWidget;
+use OOUI\HorizontalLayout;
+use OOUI\LabelWidget;
 
 class ReadConfirmationsTool extends Literal {
 
@@ -22,6 +24,8 @@ class ReadConfirmationsTool extends Literal {
 	private ?RevisionRecord $mustReadAnother = null;
 	/** @var Title|null */
 	private ?Title $title = null;
+	/** @var OutputPage */
+	private OutputPage $output;
 
 	/**
 	 *
@@ -64,6 +68,7 @@ class ReadConfirmationsTool extends Literal {
 
 		if ( $this->readAt || $this->mustReadThisRevision || $this->mustReadAnother ) {
 			$context->getOutput()->enableOOUI();
+			$this->output = $context->getOutput();
 			return true;
 		}
 		return false;
@@ -79,26 +84,39 @@ class ReadConfirmationsTool extends Literal {
 			return ( new ButtonWidget( [
 				'label' => Message::newFromKey( 'page-read-assignments-do-confirm-label' )->text(),
 				'icon' => 'add',
-				'flags' => [ 'progressive' ],
 				'framed' => false,
+				'flags' => [ 'progressive' ],
 				'classes' => [ 'page-read-confirmations-confirm-button' ],
 			] ) )->toString();
-		} elseif ( $this->mustReadAnother ) {
-			$message = Message::newFromKey( 'page-read-assignments-has-another-request-label' )
-				->params(
-					$this->title->getPrefixedText(),
-					$this->mustReadAnother->getId()
-				)->parse();
-			// There is a revision user must read, but not this one
-			return Html::rawElement( 'span', [
-				'class' => 'page-read-confirmations-requested-another-label'
-			], $message );
-		} elseif ( $this->readAt ) {
-			// Already read
-			return Html::element( 'span', [
-				'class' => 'page-read-confirmations-confirmed-label'
-			], Message::newFromKey( 'page-read-assignments-has-confirmed-label' )->text() );
+		} else {
+			$html = new HorizontalLayout();
+			$mustReadAnotherButton = new ButtonWidget( [
+				'icon' => 'alert',
+				'title' => Message::newFromKey( 'page-read-assignments-read-another-version-label' )->text(),
+				'framed' => false,
+				'infusable' => true,
+				'classes' => [ 'page-read-confirmations-another-version-button' ],
+				'data' => json_encode( [ 'mustRead' => $this->mustReadAnother?->getId() ] )
+			] );
+			if ( $this->readAt ) {
+				$html->appendContent(
+					new LabelWidget( [
+						'label' => Message::newFromKey( 'page-read-assignments-has-confirmed-label' )->text(),
+						'classes' => [ 'page-read-confirmations-confirmed-label' ]
+					] )
+				);
+				if ( $this->mustReadAnother ) {
+					$this->output->addModules( [ 'ext.pageReadConfirmations.anotherRequestedPopup' ] );
+					$html->appendContent( $mustReadAnotherButton );
+				}
+			} elseif ( $this->mustReadAnother ) {
+				$this->output->addModules( [ 'ext.pageReadConfirmations.anotherRequestedPopup' ] );
+				$mustReadAnotherButton->setLabel(
+					Message::newFromKey( 'page-read-assignments-read-another-version-label' )->text()
+				);
+				$html->appendContent( $mustReadAnotherButton );
+			}
+			return $html->toString();
 		}
-		return '';
 	}
 }
