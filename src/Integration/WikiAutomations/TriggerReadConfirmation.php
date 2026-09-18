@@ -39,10 +39,10 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 				'type' => 'textarea',
 				'name' => 'audience_users',
 				'label' => Message::newFromKey(
-					'page-read-confirmations-inspector-activity-trigger-audience-header'
+					'page-read-confirmations-inspector-activity-trigger-audience-users'
 				)->text(),
 				'help' => Message::newFromKey(
-					'page-read-confirmations-inspector-activity-trigger-audience-help'
+					'page-read-confirmations-inspector-activity-trigger-audience-users-help'
 				)->text(),
 				'helpInline' => true,
 				'labelAlign' => 'top',
@@ -52,7 +52,7 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 				'type' => 'textarea',
 				'name' => 'audience_groups',
 				'label' => Message::newFromKey(
-					'page-read-confirmations-inspector-activity-trigger-audience-groups-header'
+					'page-read-confirmations-inspector-activity-trigger-audience-groups'
 				)->text(),
 				'help' => Message::newFromKey(
 					'page-read-confirmations-inspector-activity-trigger-audience-groups-help'

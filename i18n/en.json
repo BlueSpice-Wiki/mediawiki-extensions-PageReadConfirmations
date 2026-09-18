@@ -64,10 +64,10 @@
 	"page-read-confirmation-reminder-event-message-bot": "You are requested to confirm that you have read the page $1",
 	"page-read-confirmations-confirm-remind-request": "You are about to send a reminder to users who have not yet confirmed reading this page.",
 	"page-read-confirmations-reminder-sent": "Reminder sent",
-	"page-read-confirmations-inspector-activity-trigger-audience-header": "Request confirmation from users",
-	"page-read-confirmations-inspector-activity-trigger-audience-help": "Comma-separated list of usernames. Wikitext expressions are supported",
-	"page-read-confirmations-inspector-activity-trigger-audience-users": "Request from individual users",
-	"page-read-confirmations-inspector-activity-trigger-audience-groups": "Request from groups",
+	"page-read-confirmations-inspector-activity-trigger-audience-users-help": "Enter usernames separated by commas. Wikitext expressions are supported. ",
+	"page-read-confirmations-inspector-activity-trigger-audience-users": "Users required to confirm reading the page",
+	"page-read-confirmations-inspector-activity-trigger-audience-groups": "Groups whose members must confirm that they have read the page",
+	"page-read-confirmations-inspector-activity-trigger-audience-groups-help": "Enter group names separated by commas. Wikitext expressions are supported.",
 	"page-read-assignments-has-another-request-label": "A read confirmation is required for another version of this page",
 	"page-read-confirmations-old-revision-warning-title": "Not latest version",
 	"page-read-confirmations-old-revision-warning-body": "Confirmation is requested for an older version of this page.",
@@ -84,7 +84,5 @@
 	"page-read-assignments-read-another-version-label": "Confirmation requested",
 	"page-read-assignments-has-another-request-button": "View version",
 	"page-read-assignments-has-another-request-label-extended": "A read confirmation is already active for another version of this page. Cancel the existing confirmation before requesting one for this version.",
-	"page-read-confirmations-action-discard": "Discard",
-	"page-read-confirmations-inspector-activity-trigger-audience-groups-header": "Request confirmation from groups",
-	"page-read-confirmations-inspector-activity-trigger-audience-groups-help": "Comma-separated list of group names. Wikitext expressions are supported."
+	"page-read-confirmations-action-discard": "Discard"
 }
