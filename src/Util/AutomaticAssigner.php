@@ -9,6 +9,7 @@ use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
+use MediaWiki\User\UserIdentity;
 
 readonly class AutomaticAssigner {
 
@@ -74,7 +75,14 @@ readonly class AutomaticAssigner {
 	 * @return array
 	 */
 	private function getAudienceUsers( array $data ): array {
-		$audience = explode( ',', $data['audience_users'] ?? '' );
+		$audienceUsers = $data['audience_users'] ?? '';
+		if ( is_array( $audienceUsers ) ) {
+			if ( !empty( $audienceUsers ) && $audienceUsers[0] instanceof UserIdentity ) {
+				return array_filter( $audienceUsers, fn ( $user ) => $user && $user->isRegistered() );
+			}
+			$audienceUsers = implode( ',', $audienceUsers );
+		}
+		$audience = explode( ',', $audienceUsers );
 		$audience = array_map( 'trim', $audience );
 
 		$users = array_map(

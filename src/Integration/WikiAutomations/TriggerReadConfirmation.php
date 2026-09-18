@@ -6,9 +6,11 @@ use Exception;
 use MediaWiki\Extension\PageReadConfirmations\Util\AutomaticAssigner;
 use MediaWiki\Extension\WikiAutomations\Action\GenericAutomationAction;
 use MediaWiki\Extension\WikiAutomations\IPageScopedAutomationAction;
+use MediaWiki\Extension\WikiAutomations\Util\WikitextExpressionParser;
 use MediaWiki\Message\Message;
 use MediaWiki\Page\PageIdentity;
 use MediaWiki\Status\Status;
+use MediaWiki\User\User;
 use MWStake\MediaWiki\Component\FormEngine\IFormSpecification;
 use MWStake\MediaWiki\Component\FormEngine\StandaloneFormSpecification;
 
@@ -19,9 +21,11 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 
 	/**
 	 * @param AutomaticAssigner $automaticAssigner
+	 * @param WikitextExpressionParser $expressionParser
 	 */
 	public function __construct(
-		private readonly AutomaticAssigner $automaticAssigner
+		private readonly AutomaticAssigner $automaticAssigner,
+		private readonly WikitextExpressionParser $expressionParser
 	) {
 	}
 
@@ -32,16 +36,30 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 		$spec = new StandaloneFormSpecification();
 		$spec->setItems( [
 			[
-				'type' => 'user_group_multiselect',
+				'type' => 'textarea',
 				'name' => 'audience_users',
 				'label' => Message::newFromKey(
 					'page-read-confirmations-inspector-activity-trigger-audience-header'
 				)->text(),
+				'help' => Message::newFromKey(
+					'page-read-confirmations-inspector-activity-trigger-audience-help'
+				)->text(),
+				'helpInline' => true,
 				'labelAlign' => 'top',
 				'widget_$overlay' => true,
-				'widget_placeholder' => Message::newFromKey(
-					'page-read-confirmations-assign-placeholder'
+			],
+			[
+				'type' => 'textarea',
+				'name' => 'audience_groups',
+				'label' => Message::newFromKey(
+					'page-read-confirmations-inspector-activity-trigger-audience-groups-header'
 				)->text(),
+				'help' => Message::newFromKey(
+					'page-read-confirmations-inspector-activity-trigger-audience-groups-help'
+				)->text(),
+				'helpInline' => true,
+				'labelAlign' => 'top',
+				'widget_$overlay' => true,
 			],
 		] );
 		return $spec;
@@ -56,11 +74,15 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 
 		$displayData = [];
 		if ( !empty( $audienceUsers ) ) {
+			if ( is_array( $audienceUsers ) ) {
+				// B/C - so it doesnt break
+				$audienceUsers = '';
+			}
 			$displayData[] = [
 				'key' => Message::newFromKey(
 					'page-read-confirmations-inspector-activity-trigger-audience-users'
 				)->text(),
-				'value' => $audienceUsers,
+				'value' => trim( $audienceUsers ),
 			];
 		}
 		if ( !empty( $audienceGroups ) ) {
@@ -68,7 +90,7 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 				'key' => Message::newFromKey(
 					'page-read-confirmations-inspector-activity-trigger-audience-groups'
 				)->text(),
-				'value' => $audienceGroups,
+				'value' => trim( $audienceGroups ),
 			];
 		}
 		return $displayData;
@@ -92,8 +114,21 @@ class TriggerReadConfirmation extends GenericAutomationAction implements IPageSc
 		if ( !$this->page ) {
 			return Status::newFatal( 'missingpage' );
 		}
+		$data = $this->getData();
+		if ( is_array( $data['assigned_users'] ) ) {
+			// B/C - so it doesnt break
+			$data['assigned_users'] = '';
+		}
+		$audienceUsers = $data['audience_users'] ?? '';
+		if ( $audienceUsers ) {
+			$data['assigned_users'] = $this->expressionParser->processUsers(
+				$audienceUsers,
+				User::newSystemUser( 'MediaWiki default', [ 'steal' => true ] ),
+				$this->page
+			);
+		}
 		try {
-			$this->automaticAssigner->assignFromData( $this->page, $this->getData() );
+			$this->automaticAssigner->assignFromData( $this->page, $data );
 			return Status::newGood();
 		} catch ( Exception $ex ) {
 			return Status::newFatal( $ex->getMessage() );

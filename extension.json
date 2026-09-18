@@ -22,7 +22,7 @@
 					"message": "page-read-confirmations-automation-action-trigger",
 					"spec": {
 						"class": "\\MediaWiki\\Extension\\PageReadConfirmations\\Integration\\WikiAutomations\\TriggerReadConfirmation",
-						"services": [ "PageReadConfirmations._AutomaticAssigner" ]
+						"services": [ "PageReadConfirmations._AutomaticAssigner", "WikiAutomations.Util.WikitextExpressionParser" ]
 					}
 				}
 			}
