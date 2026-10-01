@@ -62,7 +62,7 @@ class UpdateUnifiedTaskOverview implements
 	): void {
 		$title = $this->titleFactory->newFromPageIdentity( $page );
 		$descriptor = new ReadConfirmationTaskDescriptor( $title, $revisionToRead );
-		foreach ( $this->manager->getPendingUsers( $page ) as $pendingUser ) {
+		foreach ( $this->manager->getPendingUsers( $title ) as $pendingUser ) {
 			$this->getTaskStore()?->storeTask( $descriptor, $pendingUser );
 		}
 	}

@@ -6,6 +6,7 @@ use MediaWiki\Block\BlockManager;
 use MediaWiki\Config\Config;
 use MediaWiki\Page\PageIdentity;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Title\TitleFactory;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
@@ -22,6 +23,7 @@ class ReadConfirmationAssignmentStore {
 	 * @param PermissionManager $permissionManager
 	 * @param Config $config
 	 * @param BlockManager $blockManager
+	 * @param TitleFactory $titleFactory
 	 */
 	public function __construct(
 		private readonly ILoadBalancer $lb,
@@ -29,7 +31,8 @@ class ReadConfirmationAssignmentStore {
 		private readonly UserFactory $userFactory,
 		private readonly PermissionManager $permissionManager,
 		private readonly Config $config,
-		private readonly BlockManager $blockManager
+		private readonly BlockManager $blockManager,
+		private readonly TitleFactory $titleFactory
 	) {
 	}
 
@@ -373,7 +376,11 @@ class ReadConfirmationAssignmentStore {
 			// its not a real user
 			return false;
 		}
+		$title = $this->titleFactory->castFromPageIdentity( $page );
+		if ( !$title ) {
+			return false;
+		}
 		// Check if the user has read access to the page
-		return $this->permissionManager->quickUserCan( 'read', $user, $page );
+		return $this->permissionManager->quickUserCan( 'read', $user, $title );
 	}
 }

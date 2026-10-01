@@ -21,7 +21,8 @@ return [
 			$services->getUserFactory(),
 			$services->getPermissionManager(),
 			$services->getMainConfig(),
-			$services->getBlockManager()
+			$services->getBlockManager(),
+			$services->getTitleFactory()
 		);
 	},
 	'PageReadConfirmations.Manager' => static function ( MediaWikiServices $services ) {

@@ -31,7 +31,7 @@ class ConfirmationLogger {
 			$revision->getPage(),
 			$actor,
 			[
-				'4::revision' => $revision->getId()
+				'4:revision:revision' => $revision->getId()
 			]
 		);
 		$this->logger->info(
@@ -55,8 +55,8 @@ class ConfirmationLogger {
 			$confirmation->revision->getPage(),
 			$actor,
 			[
-				'4::revision' => $confirmation->revision->getId(),
-				'5::user' => $confirmation->assignee->getName()
+				'4:revision:revision' => $confirmation->revision->getId(),
+				'5:user:user' => $confirmation->assignee->getName()
 			]
 		);
 		$this->logger->info(
@@ -77,15 +77,27 @@ class ConfirmationLogger {
 	 * @return void
 	 */
 	public function logAssign( UserIdentity $actor, PageIdentity $page, array $assignment ): void {
-		$this->addEntry(
-			'assign',
-			$page,
-			$actor,
-			[
-				'4::key' => $assignment['key'],
-				'5::type' => $assignment['type']
-			]
-		);
+		if ( $assignment['type'] === 'user' ) {
+			$this->addEntry(
+				'assign-user',
+				$page,
+				$actor,
+				[
+					'4:user:user' => $assignment['key']
+				]
+			);
+		}
+		if ( $assignment['type'] === 'group' ) {
+			$this->addEntry(
+				'assign-group',
+				$page,
+				$actor,
+				[
+					'4::group' => $assignment['key']
+				]
+			);
+		}
+
 		$this->logger->info(
 			'User {user} assigned a read confirmation for page {pageTitle} with key {key} and type {type}',
 			[
@@ -104,15 +116,27 @@ class ConfirmationLogger {
 	 * @return void
 	 */
 	public function logUnassign( UserIdentity $actor, PageIdentity $page, array $assignment ): void {
-		$this->addEntry(
-			'unassign',
-			$page,
-			$actor,
-			[
-				'4::key' => $assignment['key'],
-				'5::type' => $assignment['type']
-			]
-		);
+		if ( $assignment['type'] === 'user' ) {
+			$this->addEntry(
+				'unassign-user',
+				$page,
+				$actor,
+				[
+					'4:user:user' => $assignment['key']
+				]
+			);
+		}
+		if ( $assignment['type'] === 'group' ) {
+			$this->addEntry(
+				'unassign-group',
+				$page,
+				$actor,
+				[
+					'4::group' => $assignment['key']
+				]
+			);
+		}
+
 		$this->logger->info(
 			'User {user} unassigned a read confirmation for page {pageTitle} with key {key} and type {type}',
 			[
@@ -135,7 +159,7 @@ class ConfirmationLogger {
 			$revision->getPage(),
 			$actor,
 			[
-				'4::revision' => $revision->getId()
+				'4:revision:revision' => $revision->getId()
 			]
 		);
 		$this->logger->info(
