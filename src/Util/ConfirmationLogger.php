@@ -2,8 +2,8 @@
 
 namespace MediaWiki\Extension\PageReadConfirmations\Util;
 
-use ManualLogEntry;
 use MediaWiki\Extension\PageReadConfirmations\ReadConfirmationEntity;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\Page\PageIdentity;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\User\User;
