@@ -3,6 +3,6 @@
 }
 
 .page-read-confirmations-another-version-popup .oo-ui-buttonWidget a {
-	color: var( --color-inverted-fixed, #fff ) !important;
+	color: var( --color-inverted-fixed, #fff ) !important; /* stylelint-disable-line declaration-no-important */
 	margin: 4px 0 0 0;
 }
