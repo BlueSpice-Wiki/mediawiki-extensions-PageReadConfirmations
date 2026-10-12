@@ -78,7 +78,7 @@ readonly class AutomaticAssigner {
 		$audienceUsers = $data['audience_users'] ?? '';
 		if ( is_array( $audienceUsers ) ) {
 			if ( !empty( $audienceUsers ) && $audienceUsers[0] instanceof UserIdentity ) {
-				return array_filter( $audienceUsers, fn ( $user ) => $user && $user->isRegistered() );
+				return array_filter( $audienceUsers, static fn ( $user ) => $user && $user->isRegistered() );
 			}
 			$audienceUsers = implode( ',', $audienceUsers );
 		}
@@ -89,7 +89,7 @@ readonly class AutomaticAssigner {
 			fn ( $username ) => $this->userFactory->newFromName( $username ),
 			$audience
 		);
-		return array_filter( $users, fn ( $user ) => $user && $user->isRegistered() );
+		return array_filter( $users, static fn ( $user ) => $user && $user->isRegistered() );
 	}
 
 	/**

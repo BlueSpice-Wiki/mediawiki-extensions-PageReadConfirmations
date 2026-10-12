@@ -12,7 +12,6 @@ use MediaWiki\User\UserIdentity;
 class Reader extends \MWStake\MediaWiki\Component\DataStore\Reader {
 
 	/**
-	 *
 	 * @param PageIdentity $forPage
 	 * @param int|null $forRevision
 	 * @param UserIdentity $forUser

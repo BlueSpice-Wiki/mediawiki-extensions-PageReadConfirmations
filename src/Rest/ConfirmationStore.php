@@ -39,6 +39,7 @@ class ConfirmationStore extends QueryStore {
 		parent::__construct( $hookContainer );
 	}
 
+	/** @inheritDoc */
 	public function needsReadAccess() {
 		return true;
 	}

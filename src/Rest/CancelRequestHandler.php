@@ -21,13 +21,12 @@ class CancelRequestHandler extends SimpleHandler {
 	) {
 	}
 
-	/**
-	 * @return true
-	 */
+	/** @inheritDoc */
 	public function needsReadAccess() {
 		return true;
 	}
 
+	/** @inheritDoc */
 	public function needsWriteAccess() {
 		return true;
 	}

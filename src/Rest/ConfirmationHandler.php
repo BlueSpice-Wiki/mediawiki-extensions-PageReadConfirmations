@@ -21,9 +21,7 @@ class ConfirmationHandler extends SimpleHandler {
 	) {
 	}
 
-	/**
-	 * @return true
-	 */
+	/** @inheritDoc */
 	public function needsReadAccess() {
 		return true;
 	}

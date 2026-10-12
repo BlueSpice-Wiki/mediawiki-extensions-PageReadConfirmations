@@ -25,9 +25,7 @@ class GetRequestInfoHandler extends SimpleHandler {
 	) {
 	}
 
-	/**
-	 * @return true
-	 */
+	/** @inheritDoc */
 	public function needsReadAccess() {
 		return true;
 	}

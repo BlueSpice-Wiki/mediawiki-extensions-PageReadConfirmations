@@ -14,7 +14,6 @@ use MWStake\MediaWiki\Component\DataStore\NoWriterException;
 readonly class Store implements IStore {
 
 	/**
-	 *
 	 * @param PageIdentity $forPage
 	 * @param int|null $forRevision
 	 * @param UserIdentity $forUser

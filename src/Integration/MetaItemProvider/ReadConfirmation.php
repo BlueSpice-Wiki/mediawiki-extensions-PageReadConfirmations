@@ -20,7 +20,6 @@ class ReadConfirmation implements IMetaItemProvider {
 	}
 
 	/**
-	 *
 	 * @inheritDoc
 	 */
 	public function getName(): string {
@@ -28,7 +27,6 @@ class ReadConfirmation implements IMetaItemProvider {
 	}
 
 	/**
-	 *
 	 * @inheritDoc
 	 */
 	public function getComponent(): IComponent {

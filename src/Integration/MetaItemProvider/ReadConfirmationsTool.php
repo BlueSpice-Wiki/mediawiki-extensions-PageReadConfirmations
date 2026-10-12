@@ -27,9 +27,6 @@ class ReadConfirmationsTool extends Literal {
 	/** @var OutputPage */
 	private OutputPage $output;
 
-	/**
-	 *
-	 */
 	public function __construct(
 		private readonly ReadConfirmationManager $manager,
 		private readonly RevisionLookup $revisionLookup
@@ -38,7 +35,6 @@ class ReadConfirmationsTool extends Literal {
 	}
 
 	/**
-	 *
 	 * @param IContextSource $context
 	 * @return bool
 	 */
@@ -75,7 +71,6 @@ class ReadConfirmationsTool extends Literal {
 	}
 
 	/**
-	 *
 	 * @return string
 	 */
 	public function getHtml(): string {

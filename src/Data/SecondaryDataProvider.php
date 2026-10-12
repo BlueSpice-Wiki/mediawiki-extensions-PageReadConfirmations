@@ -12,7 +12,6 @@ use MWStake\MediaWiki\Component\DataStore\ISecondaryDataProvider;
 class SecondaryDataProvider implements ISecondaryDataProvider {
 
 	/**
-	 *
 	 * @param PageIdentity $forPage
 	 * @param UserIdentity $forUser
 	 * @param Language $language

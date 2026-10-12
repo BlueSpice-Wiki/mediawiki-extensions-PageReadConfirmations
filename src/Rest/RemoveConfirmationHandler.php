@@ -24,16 +24,12 @@ class RemoveConfirmationHandler extends SimpleHandler {
 	) {
 	}
 
-	/**
-	 * @return true
-	 */
+	/** @inheritDoc */
 	public function needsReadAccess() {
 		return true;
 	}
 
-	/**
-	 * @return true
-	 */
+	/** @inheritDoc */
 	public function needsWriteAccess() {
 		return true;
 	}
