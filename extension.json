@@ -177,7 +177,8 @@
 				"page-read-confirmations-action-save",
 				"page-read-assignments-has-another-request-label-extended",
 				"page-read-assignments-has-another-request-button",
-				"page-read-confirmations-action-discard"
+				"page-read-confirmations-action-discard",
+				"page-read-confirmations-action-previous"
 			]
 		},
 		"ext.pageReadConfirmations.workflows.editor": {

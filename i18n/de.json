@@ -85,5 +85,6 @@
 	"page-read-assignments-read-another-version-label": "Bestätigung erbeten",
 	"page-read-assignments-has-another-request-button": "Version ansehen",
 	"page-read-assignments-has-another-request-label-extended": "Für eine andere Version dieser Seite ist bereits eine Lesebestätigung aktiv. {{#FORMAL:Breche|Brechen Sie}} die bestehende Bestätigung ab, bevor {{#FORMAL:du|Sie}} eine für diese Version {{#FORMAL:anforderst|anfordern}}.",
-	"page-read-confirmations-action-discard": "Verwerfen"
+	"page-read-confirmations-action-discard": "Verwerfen",
+	"page-read-confirmations-action-previous": "Zurück"
 }

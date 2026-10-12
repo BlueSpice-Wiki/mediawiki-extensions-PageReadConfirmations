@@ -26,6 +26,7 @@
 	"page-read-confirmations-action-remind": "Label for the remind action button in the send-reminder confirmation dialog.",
 	"page-read-confirmations-error": "Generic error message shown when an API request fails.",
 	"page-read-confirmations-assign-instruction": "Instruction text in the assignment dialog describing what the user should do.",
+	"page-read-confirmations-assign-placeholder": "Placeholder text for groups and user input widget",
 	"page-read-confirmations-assign-users": "Label for the field that lets the user select individual users to assign.",
 	"page-read-confirmations-assign-groups": "Label for the field that lets the user select user groups to assign.",
 	"page-read-confirmations-assignment-dialog-title": "Title of the dialog for setting read confirmation assignments.",
@@ -74,5 +75,6 @@
 	"page-read-confirmations-action-request": "Label for the action button to request read confirmations for a page.",
 	"page-read-confirmations-uto-task-header": "Sub-header shown on the Unified Task Overview tile for pending read confirmations.",
 	"page-read-confirmations-confirm-assign-dirty": "Prompt when user tries to switch to view confirmations panel with assignments input dirty",
-	"page-read-confirmations-action-show-confirmations": "Label for the action switching to the confirmations panel in the assignment dialog."
+	"page-read-confirmations-action-show-confirmations": "Label for the action switching to the confirmations panel in the assignment dialog.",
+	"page-read-confirmations-action-previous": "Dialog action back\n{{Identical|Back}}"
 }
