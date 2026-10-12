@@ -1,10 +1,10 @@
-ext.pageReadConfirmations.ConfirmationsPanel = function( config ) {
+ext.pageReadConfirmations.ConfirmationsPanel = function ( config ) {
 	this.grid = null;
 	this.dialog = config.dialog;
 	this.windowManager = null;
 	this.allowEditing = typeof config.allowEditing === 'boolean' ? config.allowEditing : true;
 	this.pendingCount = 0;
-	this.requestInfo = config.requestInfo
+	this.requestInfo = config.requestInfo;
 
 	ext.pageReadConfirmations.ConfirmationsPanel.super.call( this, Object.assign( {
 		expanded: false,
@@ -84,7 +84,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 		new OO.ui.HorizontalLayout( {
 			items: [
 				this.versionLabel,
-				this.cancelButton,
+				this.cancelButton
 			]
 		} ).$element
 	);
@@ -108,14 +108,14 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 				type: 'user',
 				showImage: true
 			},
-			prc_read_at: {
+			prc_read_at: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-read-time' ),
 				type: 'text',
 				valueParser: function ( value, row ) {
 					return row.read_at_for_user;
 				}
 			},
-			has_confirmed: {
+			has_confirmed: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-status' ),
 				type: 'boolean',
 				width: 40
@@ -137,11 +137,11 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.renderRequestInfo = funct
 	this.pendingCount = requestInfo.pending;
 	this.readCount = requestInfo.read;
 	this.totalRequested = requestInfo.total;
-	this.pendingCount > 0 ? this.versionLabel.$element.show() : this.versionLabel.$element.hide();
+	this.pendingCount > 0 ? this.versionLabel.$element.show() : this.versionLabel.$element.hide(); // eslint-disable-line no-unused-expressions
 	this.cancelButton.setDisabled( this.pendingCount === 0 );
-	this.pendingCount > 0 ? this.cancelButton.$element.show() : this.cancelButton.$element.hide();
+	this.pendingCount > 0 ? this.cancelButton.$element.show() : this.cancelButton.$element.hide(); // eslint-disable-line no-unused-expressions
 	this.sendReminderButton.setDisabled( this.pendingCount === 0 );
-	this.pendingCount > 0 ? this.sendReminderButton.$element.show() : this.sendReminderButton.$element.hide();
+	this.pendingCount > 0 ? this.sendReminderButton.$element.show() : this.sendReminderButton.$element.hide(); // eslint-disable-line no-unused-expressions
 
 	if ( this.pendingCount === 0 ) {
 		this.pendingMessage.setLabel( new OO.ui.HtmlSnippet(
@@ -154,7 +154,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.renderRequestInfo = funct
 		) );
 		this.pendingMessage.setType( 'warning' );
 	}
-}
+};
 
 ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = function () {
 	this.confirm(
@@ -188,7 +188,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.onSendReminderClick = fun
 		} );
 };
 
-ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = async function ( item ) {
+ext.pageReadConfirmations.ConfirmationsPanel.prototype.onCancelRequestClick = async function ( item ) { // eslint-disable-line no-unused-vars
 	this.confirm(
 		mw.msg( 'page-read-confirmations-confirm-cancel-request' ), {
 			actions: [

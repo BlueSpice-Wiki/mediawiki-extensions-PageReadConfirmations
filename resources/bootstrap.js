@@ -9,7 +9,7 @@ window.ext.pageReadConfirmations = {
 };
 
 $( () => {
-	$( '#ca-readConfirmationAssign' ).on( 'click', function ( e ) {
+	$( '#ca-readConfirmationAssign' ).on( 'click', ( e ) => { // eslint-disable-line no-unused-vars
 		mw.loader.using( 'ext.pageReadConfirmations.assignments', () => {
 			const wm = OO.ui.getWindowManager();
 			const dialog = new ext.pageReadConfirmations.ui.AssignmentDialog();
@@ -22,7 +22,7 @@ $( () => {
 		} );
 	} );
 
-	$( '.page-read-confirmations-confirm-button' ).on( 'click', function ( e ) {
+	$( '.page-read-confirmations-confirm-button' ).on( 'click', ( e ) => { // eslint-disable-line no-unused-vars
 		OO.ui.confirm(
 			mw.msg( 'page-read-confirmations-confirm-confirmation' ), {
 				title: mw.msg( 'page-read-confirmations-confirm-confirmation-title' ),
@@ -35,7 +35,7 @@ $( () => {
 						label: mw.msg( 'page-read-confirmations-action-confirm' ),
 						flags: [ 'progressive' ],
 						action: 'accept'
-					},
+					}
 				]
 			} )
 			.done( async ( confirmed ) => {
@@ -48,7 +48,7 @@ $( () => {
 						throw new Error( 'API error' );
 					}
 					window.location.reload();
-				} catch ( e ) {
+				} catch ( e ) { // eslint-disable-line no-shadow
 					OO.ui.alert( mw.msg( 'page-read-confirmations-error' ), { type: 'error' } );
 				}
 			} );

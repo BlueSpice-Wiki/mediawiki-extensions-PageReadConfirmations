@@ -47,7 +47,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.static.actions = [
 	{
 		action: 'edit_assignments',
 		label: mw.msg( 'page-read-confirmations-edit-assignments' ),
-		modes: [ 'manage' ],
+		modes: [ 'manage' ]
 	}
 ];
 
@@ -61,7 +61,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getSetupProcess = functi
 
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function () {
 	ext.pageReadConfirmations.ui.AssignmentDialog.super.prototype.initialize.call( this );
-	this.actions.setAbilities( { request: false, save_assignments: false, edit_assignments: false } );
+	this.actions.setAbilities( { request: false, save_assignments: false, edit_assignments: false } ); // eslint-disable-line camelcase
 	this.confirmWindowManager = new OO.ui.WindowManager();
 	$( OO.ui.getTeleportTarget() ).append( this.confirmWindowManager.$element );
 	this.confirmWindowManager.addWindows( [ new OO.ui.MessageDialog() ] );
@@ -78,13 +78,13 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 			) {
 				this.unablePanel = new OO.ui.PanelLayout( {
 					expanded: false,
-					padded: true,
+					padded: true
 				} );
 
 				this.unablePanel.$element.append(
 					new OO.ui.MessageWidget( {
 						label: mw.msg( 'page-read-assignments-has-another-request-label-extended' ),
-						type: 'warning',
+						type: 'warning'
 					} ).$element
 				);
 				this.$body.append( this.unablePanel.$element );
@@ -92,7 +92,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 				return;
 
 			}
- 		} catch ( e ) {
+		} catch ( e ) {
 			this.request = null;
 		}
 
@@ -133,7 +133,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 				this.switchMode( 'history' );
 			}
 		}
-	}
+	};
 
 	initPanels();
 };
@@ -175,11 +175,11 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 				this.saveAssignments()
 					.then( () => {
 						this.close( { action: 'save' } );
-						this.get
+						this.get; // eslint-disable-line no-unused-expressions
 					} ).catch( () => {
-					this.popPending();
-					dfd.reject( new OO.ui.Error( mw.msg( 'page-read-confirmations-error' ) ) );
-				} );
+						this.popPending();
+						dfd.reject( new OO.ui.Error( mw.msg( 'page-read-confirmations-error' ) ) );
+					} );
 				return dfd.promise();
 			}
 
@@ -209,7 +209,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 								this.switchMode( 'manage' );
 								this.popPending();
 								dfd.resolve();
-							} )
+							} );
 					} )
 					.catch( () => {
 						this.popPending();
@@ -243,7 +243,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 							this.assignmentPanel.resetValues();
 							this.setDirty( false );
 							this.switchMode( 'manage' );
-						} )
+						} );
 				} else {
 					this.switchMode( 'manage' );
 				}
@@ -263,9 +263,9 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.saveAssignments = functi
 };
 
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.setDirty = function ( dirty ) {
-	this.dirty = dirty
+	this.dirty = dirty;
 	this.actions.setAbilities( {
-		save_assignments: dirty,
+		save_assignments: dirty, // eslint-disable-line camelcase
 		request: this.assignmentPanel.getValue().length > 0
 	} );
 };

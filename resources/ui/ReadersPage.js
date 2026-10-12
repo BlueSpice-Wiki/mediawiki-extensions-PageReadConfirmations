@@ -1,4 +1,4 @@
-ext.pageReadConfirmations.ReadersPage = function( name, config ) {
+ext.pageReadConfirmations.ReadersPage = function ( name, config ) {
 	ext.pageReadConfirmations.ReadersPage.super.call( this, name, config );
 	this.panel = new ext.pageReadConfirmations.ReadersPanel( config );
 	this.dialog = config.dialog;
@@ -24,6 +24,6 @@ ext.pageReadConfirmations.ReadersPage.prototype.onInfoPanelSelect = async functi
 	await this.panel.init();
 };
 
-if ( ext.pageReadConfirmations._currentPageSupported() ) {
+if ( ext.pageReadConfirmations._currentPageSupported() ) { // eslint-disable-line no-underscore-dangle
 	registryPageInformation.register( 'read_confirmations', ext.pageReadConfirmations.ReadersPage );
 }

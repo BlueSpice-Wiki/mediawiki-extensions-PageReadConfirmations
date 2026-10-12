@@ -60,8 +60,8 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 		}
 
 		const values = [];
-		users.forEach( user => values.push( { key: user, type: 'user' } ) );
-		groups.forEach( group => values.push( { key: group, type: 'group' } ) );
+		users.forEach( ( user ) => values.push( { key: user, type: 'user' } ) );
+		groups.forEach( ( group ) => values.push( { key: group, type: 'group' } ) );
 		this.userGroupPicker.setValue( values );
 		this.userGroupPicker.setDisabled( false );
 		this.dialog.updateSize();

@@ -1,4 +1,4 @@
-ext.pageReadConfirmations.ReadersPanel = function( config ) {
+ext.pageReadConfirmations.ReadersPanel = function ( config ) {
 	this.grid = null;
 	this.dialog = config.dialog;
 
@@ -35,21 +35,21 @@ ext.pageReadConfirmations.ReadersPanel.prototype.initConfirmationPanel = async f
 				type: 'user',
 				showImage: true
 			},
-			prc_rev: {
+			prc_rev: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-read-version' ),
 				type: 'text',
 				valueParser: function ( value, row ) {
 					return new OO.ui.HtmlSnippet( row.revision_link || '-' );
 				}
 			},
-			prc_read_at: {
+			prc_read_at: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-read-time' ),
 				type: 'text',
 				valueParser: function ( value, row ) {
 					return row.read_at_for_user;
 				}
 			},
-			has_confirmed: {
+			has_confirmed: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-status' ),
 				type: 'boolean',
 				width: 40
