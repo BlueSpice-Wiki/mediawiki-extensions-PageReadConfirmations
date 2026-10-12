@@ -55,12 +55,12 @@ class ReadConfirmationTaskDescriptor implements ITaskDescriptor {
 
 	/** @inheritDoc */
 	public function getSubHeader(): Message {
-		return Message::newFromKey( 'page-read-confirmations-uto-task-header' );
+		return new RawMessage( '' );
 	}
 
 	/** @inheritDoc */
 	public function getBody(): Message {
-		return new RawMessage( '' );
+		return Message::newFromKey( 'page-read-confirmations-uto-task-header' );
 	}
 
 	/** @inheritDoc */
