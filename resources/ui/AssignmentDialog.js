@@ -203,6 +203,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 						)
 							.then( ( requestInfo ) => {
 								this.assignmentPanel.updateOriginalValue();
+								this.setDirty( false );
 								this.request = requestInfo;
 								this.confirmationPanel.renderRequestInfo( requestInfo );
 								this.confirmationPanel.confirmationStore.reload();
@@ -221,6 +222,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 			if ( action === 'back' ) {
 				if ( this.dirty ) {
 					this.confirmWindowManager.openWindow( 'message', {
+						title: mw.msg( 'page-read-confirmations-confirm-assign-title' ),
 						message: mw.msg( 'page-read-confirmations-confirm-assign-dirty' ),
 						actions: [
 							{
@@ -229,7 +231,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getActionProcess = funct
 								action: 'accept'
 							},
 							{
-								label: mw.msg( 'page-read-confirmations-action-cancel' ),
+								label: mw.msg( 'page-read-confirmations-action-continue' ),
 								action: 'cancel'
 							}
 						],

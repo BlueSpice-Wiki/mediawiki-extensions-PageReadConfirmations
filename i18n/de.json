@@ -77,7 +77,7 @@
 	"page-read-confirmations-confirm-request": "{{#FORMAL:Möchtest du|Möchten Sie}} wirklich eine Lesebestätigung für diese Version der Seite anfordern? Nur zugewiesene Benutzer, die das Lesen noch nicht bestätigt haben, werden zur Bestätigung aufgefordert.",
 	"page-read-confirmations-action-request": "Bestätigung anfordern",
 	"page-read-confirmations-uto-task-header": "Lesebestätigung erforderlich",
-	"page-read-confirmations-confirm-assign-dirty": "{{#FORMAL:Du hast|Sie haben}} Änderungen an den Zuweisungen vorgenommen. {{#FORMAL:Du musst|Sie müssen}} die Änderungen speichern, bevor {{#FORMAL:du|Sie}} die aktuellen Lesebestätigungen anzeigen {{#FORMAL:kannst|können}}.",
+	"page-read-confirmations-confirm-assign-dirty": "{{#FORMAL:Deine|Ihre}} Änderungen an den Zuweisungen sind noch nicht gespeichert und gehen verloren, wenn {{#FORMAL:du zurückgehst|Sie zurückgehen}}.",
 	"page-read-confirmations-action-show-confirmations": "Aktuelle Lesebestätigungen anzeigen",
 	"page-read-confirmations-disabled": "Lesebestätigungen sind für diese Seite deaktiviert",
 	"page-read-confirmations-ns-setting-label": "Lesebestätigungen",
@@ -85,6 +85,10 @@
 	"page-read-assignments-read-another-version-label": "Bestätigung erbeten",
 	"page-read-assignments-has-another-request-button": "Version ansehen",
 	"page-read-assignments-has-another-request-label-extended": "Für eine andere Version dieser Seite ist bereits eine Lesebestätigung aktiv. {{#FORMAL:Breche|Brechen Sie}} die bestehende Bestätigung ab, bevor {{#FORMAL:du|Sie}} eine für diese Version {{#FORMAL:anforderst|anfordern}}.",
-	"page-read-confirmations-action-discard": "Verwerfen",
-	"page-read-confirmations-action-previous": "Zurück"
+	"page-read-confirmations-action-discard": "Änderungen verwerfen",
+	"page-read-confirmations-action-previous": "Zurück",
+	"page-read-confirmations-confirm-assign-title": "Änderungen verwerfen?",
+	"page-read-confirmations-action-continue": "Auswahl fortsetzen",
+	"page-read-confirmations-grid-column-status-confirmed-aria-label": "Lesen bestätigt",
+	"page-read-confirmations-grid-column-status-pending-aria-label": "Bestätigung ausstehend"
 }

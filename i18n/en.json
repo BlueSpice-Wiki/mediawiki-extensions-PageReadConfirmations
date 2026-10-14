@@ -79,7 +79,7 @@
 	"page-read-confirmations-confirm-request": "Are you sure you want to request read confirmation for this version of the page? Only assigned users who have not yet confirmed reading will be requested to confirm reading the page.",
 	"page-read-confirmations-action-request": "Request confirmation",
 	"page-read-confirmations-uto-task-header": "Read confirmation required",
-	"page-read-confirmations-confirm-assign-dirty": "You made changes to the assignments. You must save changes before viewing current read confirmations.",
+	"page-read-confirmations-confirm-assign-dirty": "Your changes to the assignments have not been saved and will be lost if you go back.",
 	"page-read-confirmations-action-show-confirmations": "View current read confirmations",
 	"page-read-confirmations-disabled": "Read confirmations are disabled for this page",
 	"page-read-confirmations-ns-setting-label": "Read confirmations",
@@ -87,6 +87,10 @@
 	"page-read-assignments-read-another-version-label": "Confirmation requested",
 	"page-read-assignments-has-another-request-button": "View version",
 	"page-read-assignments-has-another-request-label-extended": "A read confirmation is already active for another version of this page. Cancel the existing confirmation before requesting one for this version.",
-	"page-read-confirmations-action-discard": "Discard",
-	"page-read-confirmations-action-previous": "Back"
+	"page-read-confirmations-action-discard": "Discard changes",
+	"page-read-confirmations-action-previous": "Back",
+	"page-read-confirmations-confirm-assign-title": "Discard changes?",
+	"page-read-confirmations-action-continue": "Continue selecting",
+	"page-read-confirmations-grid-column-status-confirmed-aria-label": "Reading confirmed",
+	"page-read-confirmations-grid-column-status-pending-aria-label": "Confirmation pending"
 }

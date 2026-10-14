@@ -118,7 +118,9 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 			has_confirmed: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-status' ),
 				type: 'boolean',
-				width: 40
+				width: 40,
+				trueAriaLabel: mw.msg( 'page-read-confirmations-grid-column-status-confirmed-aria-label' ),
+				falseAriaLabel: mw.msg( 'page-read-confirmations-grid-column-status-pending-aria-label' )
 			}
 		}
 	} );

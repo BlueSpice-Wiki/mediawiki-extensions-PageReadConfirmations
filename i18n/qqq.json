@@ -76,5 +76,10 @@
 	"page-read-confirmations-uto-task-header": "Sub-header shown on the Unified Task Overview tile for pending read confirmations.",
 	"page-read-confirmations-confirm-assign-dirty": "Prompt when user tries to switch to view confirmations panel with assignments input dirty",
 	"page-read-confirmations-action-show-confirmations": "Label for the action switching to the confirmations panel in the assignment dialog.",
-	"page-read-confirmations-action-previous": "Dialog action back\n{{Identical|Back}}"
+	"page-read-confirmations-action-previous": "Dialog action back\n{{Identical|Back}}",
+	"page-read-confirmations-action-discard": "Dialog action discard",
+	"page-read-confirmations-confirm-assign-title": "Dialog title",
+	"page-read-confirmations-action-continue": "Dialog action continue selecting",
+	"page-read-confirmations-grid-column-status-confirmed-aria-label": "Aria label for confirmed state",
+	"page-read-confirmations-grid-column-status-pending-aria-label": "Aria label for pending state"
 }

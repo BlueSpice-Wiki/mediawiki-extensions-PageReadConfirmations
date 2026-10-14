@@ -135,7 +135,9 @@
 				"page-read-confirmations-request-confirmation-button",
 				"page-read-confirmations-request-confirmation-button-title",
 				"page-read-confirmations-confirm-request",
-				"page-read-confirmations-action-request"
+				"page-read-confirmations-action-request",
+				"page-read-confirmations-grid-column-status-confirmed-aria-label",
+				"page-read-confirmations-grid-column-status-pending-aria-label"
 			],
 			"styles": [
 				"styles.less"
@@ -154,7 +156,9 @@
 				"page-read-confirmations-grid-column-user",
 				"page-read-confirmations-grid-column-read-version",
 				"page-read-confirmations-grid-column-read-time",
-				"page-read-confirmations-grid-column-status"
+				"page-read-confirmations-grid-column-status",
+				"page-read-confirmations-grid-column-status-confirmed-aria-label",
+				"page-read-confirmations-grid-column-status-pending-aria-label"
 			]
 		},
 		"ext.pageReadConfirmations.assignments": {
@@ -178,7 +182,9 @@
 				"page-read-assignments-has-another-request-label-extended",
 				"page-read-assignments-has-another-request-button",
 				"page-read-confirmations-action-discard",
-				"page-read-confirmations-action-previous"
+				"page-read-confirmations-action-previous",
+				"page-read-confirmations-confirm-assign-title",
+				"page-read-confirmations-action-continue"
 			]
 		},
 		"ext.pageReadConfirmations.workflows.editor": {
