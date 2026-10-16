@@ -236,6 +236,7 @@
 		"PageReadConfirmationAssignmentsChanged": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ],
 		"PageReadConfirmationRequested": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ],
 		"NeoWikiRegistration": "updateNeoWikiProperties",
+		"BlueSpiceGalaxyConnectorNeoWikiPagePropertyDefinitions": "updateNeoWikiProperties",
 		"PageReadConfirmationRequestDeleted": [ "updateNeoWikiProperties", "updateUnifiedTaskOverview" ]
 
 	},
