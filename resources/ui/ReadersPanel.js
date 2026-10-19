@@ -29,6 +29,7 @@ ext.pageReadConfirmations.ReadersPanel.prototype.initConfirmationPanel = async f
 	this.grid = new OOJSPlus.ui.data.GridWidget( {
 		sortable: true,
 		store: this.confirmationStore,
+		stateId: 'page-read-readers-grid',
 		columns: {
 			user_name: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-user' ),
