@@ -98,6 +98,19 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 			'?revision=' + mw.config.get( 'wgRevisionId' ),
 		pageSize: 20
 	} );
+	this.confirmationStore.connect( this, {
+		reload: async () => {
+			const request = await ext.pageReadConfirmations.api.getRequestInfo(
+				mw.config.get( 'wgArticleId' ),
+				mw.config.get( 'wgRevisionId' )
+			);
+			if ( request ) {
+				this.requestInfo = request;
+			}
+			this.renderRequestInfo( request );
+			this.dialog.updateSize();
+		}
+	} );
 
 	this.grid = new OOJSPlus.ui.data.GridWidget( {
 		sortable: true,
