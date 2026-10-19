@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 576 512"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="read-confirmation-solid.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.4511719"
+     inkscape:cx="288.04306"
+     inkscape:cy="154.70255"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+  <path
+     d="m 260.17613,512 c 0,0 -27.8239,0 -27.8239,-27.94692 0,-27.94691 27.8239,-111.78772 139.1194,-111.78772 111.29555,0 139.11942,83.84081 139.11942,111.78772 C 510.59105,512 482.76718,512 482.76718,512 Z m 111.2955,-167.68155 a 83.471661,83.840791 0 1 0 0,-167.68156 83.471661,83.840791 0 0 0 0,167.68156 M 210.53832,512 a 62.325498,62.601116 0 0 1 -6.00997,-27.94692 c 0,-37.86808 18.92022,-76.85405 53.86703,-103.96258 a 175.29047,176.06565 0 0 0 -53.86703,-7.82514 c -111.295535,0 -139.119405,83.84081 -139.119405,111.78772 C 65.408945,512 93.232815,512 93.232815,512 Z M 190.61641,344.31845 a 69.559719,69.867329 0 1 0 0,-139.73463 69.559719,69.867329 0 0 0 0,139.73463"
+     id="path1134"
+     style="stroke-width:27.8852" />
+  <path
+     fill="#000000"
+     d="m 391.88193,4.5371213 c 6.0495,6.0494947 6.0495,15.8738757 0,21.9233707 L 267.98827,150.35415 c -6.04949,6.0495 -15.87387,6.0495 -21.92336,0 L 184.11807,88.407325 c -6.04949,-6.049499 -6.04949,-15.873878 0,-21.923376 6.0495,-6.049492 15.87387,-6.049492 21.92337,0 L 257.05078,117.4449 370.00695,4.5371213 c 6.0495,-6.0494951 15.87388,-6.0494951 21.92337,0 z"
+     id="path1531"
+     style="stroke-width:0.48396" />
+</svg>

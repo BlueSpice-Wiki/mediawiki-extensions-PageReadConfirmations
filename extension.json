@@ -192,6 +192,9 @@
 				"ui/workflows/TriggerReadConfirmationActivityInspector.js",
 				"ui/workflows/registerCustomElements.js"
 			],
+			"styles": [
+				"ui/workflows/customElements.css"
+			],
 			"messages": [
 				"page-read-confirmations-automation-action-trigger",
 				"page-read-confirmations-inspector-activity-trigger-revision",
