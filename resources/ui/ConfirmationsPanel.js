@@ -115,6 +115,7 @@ ext.pageReadConfirmations.ConfirmationsPanel.prototype.initConfirmationPanel = a
 	this.grid = new OOJSPlus.ui.data.GridWidget( {
 		sortable: true,
 		store: this.confirmationStore,
+		stateId: 'page-read-confirmations-grid',
 		columns: {
 			user_name: { // eslint-disable-line camelcase
 				headerText: mw.msg( 'page-read-confirmations-grid-column-user' ),
