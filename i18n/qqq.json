@@ -81,5 +81,9 @@
 	"page-read-confirmations-confirm-assign-title": "Dialog title",
 	"page-read-confirmations-action-continue": "Dialog action continue selecting",
 	"page-read-confirmations-grid-column-status-confirmed-aria-label": "Aria label for confirmed state",
-	"page-read-confirmations-grid-column-status-pending-aria-label": "Aria label for pending state"
+	"page-read-confirmations-grid-column-status-pending-aria-label": "Aria label for pending state",
+	"page-read-confirmations-neowiki-property-pending": "NeoWiki property label",
+	"page-read-confirmations-neowiki-property-pending-count": "NeoWiki property count label",
+	"page-read-confirmations-neowiki-property-read": "NeoWiki property label for confirmed reading",
+	"page-read-confirmations-neowiki-property-read-count": "NeoWiki property count label for confirmed reading"
 }
