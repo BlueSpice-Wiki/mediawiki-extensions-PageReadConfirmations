@@ -96,5 +96,6 @@
 	"page-read-confirmations-neowiki-property-pending": "Pending read confirmations",
 	"page-read-confirmations-neowiki-property-pending-count": "Pending read confirmations count",
 	"page-read-confirmations-neowiki-property-read": "Confirmed reading",
-	"page-read-confirmations-neowiki-property-read-count": "Confirmed reading count"
+	"page-read-confirmations-neowiki-property-read-count": "Confirmed reading count",
+	"page-read-confirmations-neowiki-property-progress": "Read confirmations"
 }

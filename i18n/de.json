@@ -90,5 +90,6 @@
 	"page-read-confirmations-confirm-assign-title": "Änderungen verwerfen?",
 	"page-read-confirmations-action-continue": "Auswahl fortsetzen",
 	"page-read-confirmations-grid-column-status-confirmed-aria-label": "Lesen bestätigt",
-	"page-read-confirmations-grid-column-status-pending-aria-label": "Bestätigung ausstehend"
+	"page-read-confirmations-grid-column-status-pending-aria-label": "Bestätigung ausstehend",
+	"page-read-confirmations-neowiki-property-progress": "Lesebestätigungen"
 }
