@@ -16,6 +16,7 @@ ext.pageReadConfirmations.ui.AssignmentPanel = function ( config ) {
 		valueSet: ( value ) => {
 			this.orignalValue = value;
 			this.emit( 'change', false );
+			this.showField();
 		},
 		change: () => {
 			this.dialog.updateSize();
@@ -31,12 +32,14 @@ ext.pageReadConfirmations.ui.AssignmentPanel = function ( config ) {
 		}
 	} );
 
-	this.$element.append(
-		new OO.ui.FieldLayout( this.userGroupPicker, {
-			label: mw.msg( 'page-read-confirmations-assign-instruction' ),
-			align: 'top'
-		} ).$element
-	);
+	this.progressBar = new OO.ui.ProgressBarWidget( { progress: false } );
+	this.fieldLayout = new OO.ui.FieldLayout( this.userGroupPicker, {
+		label: mw.msg( 'page-read-confirmations-assign-instruction' ),
+		align: 'top'
+	} );
+	// Show the picker only once the assigned users are rendered in it
+	this.fieldLayout.$element.hide();
+	this.$element.append( this.progressBar.$element, this.fieldLayout.$element );
 
 	this.userGroupPicker.setDisabled( true );
 	this.loadValues();
@@ -75,6 +78,17 @@ ext.pageReadConfirmations.ui.AssignmentPanel.prototype.loadValues = async functi
 			label: mw.msg( 'page-read-confirmations-error' )
 		} ).$element );
 	}
+};
+
+ext.pageReadConfirmations.ui.AssignmentPanel.prototype.showField = function () {
+	if ( !this.progressBar ) {
+		return;
+	}
+	this.progressBar.$element.remove();
+	this.progressBar = null;
+	this.fieldLayout.$element.show();
+	this.userGroupPicker.updateInputSize();
+	this.dialog.updateSize();
 };
 
 ext.pageReadConfirmations.ui.AssignmentPanel.prototype.resetValues = function () {
