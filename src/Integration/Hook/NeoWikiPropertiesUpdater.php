@@ -110,7 +110,20 @@ class NeoWikiPropertiesUpdater implements
 				minimum: 0, maximum: null
 			)
 		);
-
+		$propertyDefinitions['read_confirmation/progress'] = new PropertyWithLabel(
+			label: Message::newFromKey( 'page-read-confirmations-neowiki-property-progress' )->text(),
+			definition: new TextProperty(
+				core: new PropertyCore(
+					description: Message::newFromKey(
+						'page-read-confirmations-neowiki-property-progress'
+					)->text(),
+					required: false,
+					default: ''
+				),
+				multiple: false, uniqueItems: false,
+				minLength: null, maxLength: null
+			)
+		);
 	}
 
 	/**

@@ -58,11 +58,13 @@ class ConfirmationProperties implements PagePropertyProvider {
 			}
 		}
 
+		$total = count( $read ) + count( $pending );
 		return [
 			'read_confirmation/read' => $read,
 			'read_confirmation/read_count' => count( $read ),
 			'read_confirmation/pending' => $pending,
 			'read_confirmation/pending_count' => count( $pending ),
+			'read_confirmation/progress' => $total ? count( $read ) . '/' . $total : '',
 		];
 	}
 }

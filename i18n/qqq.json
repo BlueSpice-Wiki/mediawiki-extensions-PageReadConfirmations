@@ -85,5 +85,6 @@
 	"page-read-confirmations-neowiki-property-pending": "NeoWiki property label",
 	"page-read-confirmations-neowiki-property-pending-count": "NeoWiki property count label",
 	"page-read-confirmations-neowiki-property-read": "NeoWiki property label for confirmed reading",
-	"page-read-confirmations-neowiki-property-read-count": "NeoWiki property count label for confirmed reading"
+	"page-read-confirmations-neowiki-property-read-count": "NeoWiki property count label for confirmed reading",
+	"page-read-confirmations-neowiki-property-progress": "NeoWiki property label for the confirmed and the total number of assigned readers, shown as \"confirmed/total\" (e.g. \"4/100\")"
 }
