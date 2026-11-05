@@ -91,5 +91,9 @@
 	"page-read-confirmations-action-continue": "Auswahl fortsetzen",
 	"page-read-confirmations-grid-column-status-confirmed-aria-label": "Lesen bestätigt",
 	"page-read-confirmations-grid-column-status-pending-aria-label": "Bestätigung ausstehend",
-	"page-read-confirmations-neowiki-property-progress": "Lesebestätigungen"
+	"page-read-confirmations-neowiki-property-progress": "Lesebestätigungen",
+	"page-read-confirmations-uto-droplet-mytasks": "Meine offenen Lesebestätigungen",
+	"page-read-confirmations-uto-droplet-mytasks-desc": "Zeigt alle offenen Lesebestätigungen, die dem angemeldeten Benutzer zugewiesen sind.",
+	"page-read-confirmations-uto-type-label": "Lesebestätigungen",
+	"page-read-confirmations-uto-type-item-label": "Lesebestätigung"
 }

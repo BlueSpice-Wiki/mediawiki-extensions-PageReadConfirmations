@@ -53,6 +53,19 @@
 		"UnifiedTaskOverview": {
 			"TaskDescriptorRegistry": {
 				"page-read-confirmation": "\\MediaWiki\\Extension\\PageReadConfirmations\\Integration\\UnifiedTaskOverview\\ReadConfirmationTaskDescriptor"
+			},
+			"TaskTypeRegistry": {
+				"readconfirmation": {
+					"prefixes": [ "page-read-confirmation" ],
+					"label": "page-read-confirmations-uto-type-label",
+					"itemLabel": "page-read-confirmations-uto-type-item-label",
+					"styles": [ "ext.pageReadConfirmations.uto.mytasks.styles" ],
+					"droplet": {
+						"name": "page-read-confirmations-uto-droplet-mytasks",
+						"description": "page-read-confirmations-uto-droplet-mytasks-desc",
+						"icon": "droplet-mytasks-readconfirmation"
+					}
+				}
 			}
 		},
 		"NotifyMe": {
@@ -85,6 +98,11 @@
 		"MediaWiki\\Extension\\PageReadConfirmations\\Tests\\": "tests/phpunit"
 	},
 	"ResourceModules": {
+		"ext.pageReadConfirmations.uto.mytasks.styles": {
+			"styles": [
+				"utoMyTasks.css"
+			]
+		},
 		"ext.pageReadConfirmations.bootstrap": {
 			"scripts": [
 				"bootstrap.js",
