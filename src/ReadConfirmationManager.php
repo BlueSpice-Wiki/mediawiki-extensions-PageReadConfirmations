@@ -85,7 +85,7 @@ class ReadConfirmationManager {
 			assignee: $user,
 			revision: $revision,
 			wikiId: $row->prc_wiki_id,
-			readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', $row->prc_read_at ) : null
+			readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', wfTimestamp( TS_MW, $row->prc_read_at ) ) : null
 		);
 	}
 
@@ -103,7 +103,7 @@ class ReadConfirmationManager {
 				assignee: $this->userFactory->newFromId( $row->prc_user ),
 				revision: $revision,
 				wikiId: $row->prc_wiki_id,
-				readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', $row->prc_read_at ) : null
+				readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', wfTimestamp( TS_MW, $row->prc_read_at ) ) : null
 			);
 		}
 		return $confirmations;
@@ -439,7 +439,7 @@ class ReadConfirmationManager {
 				assignee: $user,
 				revision: $this->revisionLookup->getRevisionById( $row->prc_rev ),
 				wikiId: $row->prc_wiki_id,
-				readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', $row->prc_read_at ) : null
+				readAt: $row->prc_read_at ? DateTime::createFromFormat( 'YmdHis', wfTimestamp( TS_MW, $row->prc_read_at ) ) : null
 			);
 		}
 
