@@ -66,6 +66,30 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 	$( OO.ui.getTeleportTarget() ).append( this.confirmWindowManager.$element );
 	this.confirmWindowManager.addWindows( [ new OO.ui.MessageDialog() ] );
 
+	if ( typeof ResizeObserver === 'function' ) {
+		this.contentResizeObserver = new ResizeObserver( OO.ui.debounce( () => {
+			if ( this.manager ) {
+				this.updateSize();
+			}
+		}, 50 ) );
+	}
+
+	this.assignmentPanel = new ext.pageReadConfirmations.ui.AssignmentPanel(
+		{ padded: true, dialog: this }
+	);
+	this.assignmentPanel.connect( this, {
+		loaded: function () {
+			this.updateSize();
+		},
+		change: 'setDirty',
+		error: function () {
+			this.actions.setAbilities( { request: false } );
+		}
+	} );
+
+	this.$body.append( this.assignmentPanel.$element );
+	this.observeContentSize( this.assignmentPanel.$element );
+
 	const initPanels = async () => {
 		try {
 			this.request = await ext.pageReadConfirmations.api.getRequestInfo(
@@ -87,7 +111,9 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 						type: 'warning'
 					} ).$element
 				);
+				this.assignmentPanel.$element.hide();
 				this.$body.append( this.unablePanel.$element );
+				this.observeContentSize( this.unablePanel.$element );
 				this.switchMode( 'unable' );
 				return;
 
@@ -95,21 +121,6 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 		} catch ( e ) {
 			this.request = null;
 		}
-
-		this.assignmentPanel = new ext.pageReadConfirmations.ui.AssignmentPanel(
-			{ padded: true, dialog: this }
-		);
-		this.assignmentPanel.connect( this, {
-			loaded: function () {
-				this.updateSize();
-			},
-			change: 'setDirty',
-			error: function () {
-				this.actions.setAbilities( { request: false } );
-			}
-		} );
-
-		this.$body.append( this.assignmentPanel.$element );
 
 		if ( this.request ) {
 			this.confirmationPanel = new ext.pageReadConfirmations.ConfirmationsPanel( {
@@ -127,6 +138,7 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 			this.confirmationPanel.setWindowManager( this.confirmWindowManager );
 			this.confirmationPanel.init();
 			this.$body.append( this.confirmationPanel.$element );
+			this.observeContentSize( this.confirmationPanel.$element );
 			if ( this.request.is_active ) {
 				this.switchMode( 'manage' );
 			} else {
@@ -141,11 +153,24 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getTeardownProcess = function ( data ) {
 	return ext.pageReadConfirmations.ui.AssignmentDialog.super.prototype.getTeardownProcess.call( this, data )
 		.first( () => {
+			if ( this.contentResizeObserver ) {
+				this.contentResizeObserver.disconnect();
+				this.contentResizeObserver = null;
+			}
 			if ( this.confirmWindowManager ) {
 				this.confirmWindowManager.destroy();
 				this.confirmWindowManager = null;
 			}
 		} );
+};
+
+/**
+ * @param {jQuery} $element
+ */
+ext.pageReadConfirmations.ui.AssignmentDialog.prototype.observeContentSize = function ( $element ) {
+	if ( this.contentResizeObserver ) {
+		this.contentResizeObserver.observe( $element[ 0 ] );
+	}
 };
 
 ext.pageReadConfirmations.ui.AssignmentDialog.prototype.switchMode = function ( mode ) {
