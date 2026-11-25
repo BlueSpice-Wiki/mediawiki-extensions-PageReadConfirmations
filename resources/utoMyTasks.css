@@ -1,0 +1,9 @@
+/* Icon of the "My open read confirmations" droplet of UnifiedTaskOverview */
+.droplet .icon-droplet.droplet-mytasks-readconfirmation {
+	background-image: url( images/contentdroplets-open-readconfirmation-icon.svg );
+}
+
+/* Editor placeholder of a <mytasks> list showing read confirmations only */
+.ve-ce-surface .mwstake-components-generictaghandler-tag-mytasks[ data-mwstake-components-generictaghandler-arg-types='readconfirmation' ] {
+	background-image: url( images/contentdroplets-open-readconfirmation-icon-greyscale.svg );
+}

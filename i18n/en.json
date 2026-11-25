@@ -97,5 +97,9 @@
 	"page-read-confirmations-neowiki-property-pending-count": "Pending read confirmations count",
 	"page-read-confirmations-neowiki-property-read": "Confirmed reading",
 	"page-read-confirmations-neowiki-property-read-count": "Confirmed reading count",
-	"page-read-confirmations-neowiki-property-progress": "Read confirmations"
+	"page-read-confirmations-neowiki-property-progress": "Read confirmations",
+	"page-read-confirmations-uto-droplet-mytasks": "My open read confirmations",
+	"page-read-confirmations-uto-droplet-mytasks-desc": "Displays all open read confirmations the current user is assigned to.",
+	"page-read-confirmations-uto-type-label": "Read confirmations",
+	"page-read-confirmations-uto-type-item-label": "Read confirmation"
 }

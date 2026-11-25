@@ -86,5 +86,9 @@
 	"page-read-confirmations-neowiki-property-pending-count": "NeoWiki property count label",
 	"page-read-confirmations-neowiki-property-read": "NeoWiki property label for confirmed reading",
 	"page-read-confirmations-neowiki-property-read-count": "NeoWiki property count label for confirmed reading",
-	"page-read-confirmations-neowiki-property-progress": "NeoWiki property label for the confirmed and the total number of assigned readers, shown as \"confirmed/total\" (e.g. \"4/100\")"
+	"page-read-confirmations-neowiki-property-progress": "NeoWiki property label for the confirmed and the total number of assigned readers, shown as \"confirmed/total\" (e.g. \"4/100\")",
+	"page-read-confirmations-uto-droplet-mytasks": "Name of the droplet inserting the <code>&lt;mytasks&gt;</code> tag of UnifiedTaskOverview preset to the read confirmations of PageReadConfirmations, shown in the content droplet list.",
+	"page-read-confirmations-uto-droplet-mytasks-desc": "Description of the droplet inserting the <code>&lt;mytasks&gt;</code> tag of UnifiedTaskOverview preset to the read confirmations of PageReadConfirmations.",
+	"page-read-confirmations-uto-type-label": "Option of the field choosing the types of task the <code>&lt;mytasks&gt;</code> tag of UnifiedTaskOverview lists: the read confirmations of PageReadConfirmations.",
+	"page-read-confirmations-uto-type-item-label": "Type of a task in the type column of the <code>&lt;mytasks&gt;</code> tag of UnifiedTaskOverview: a read confirmation of PageReadConfirmations."
 }
