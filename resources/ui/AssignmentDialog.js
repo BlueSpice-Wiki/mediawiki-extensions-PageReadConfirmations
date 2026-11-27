@@ -67,11 +67,11 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.initialize = function ()
 	this.confirmWindowManager.addWindows( [ new OO.ui.MessageDialog() ] );
 
 	if ( typeof ResizeObserver === 'function' ) {
-		this.contentResizeObserver = new ResizeObserver( OO.ui.debounce( () => {
+		this.contentResizeObserver = new ResizeObserver( () => {
 			if ( this.manager ) {
 				this.updateSize();
 			}
-		}, 50 ) );
+		} );
 	}
 
 	this.assignmentPanel = new ext.pageReadConfirmations.ui.AssignmentPanel(
@@ -162,6 +162,34 @@ ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getTeardownProcess = fun
 				this.confirmWindowManager = null;
 			}
 		} );
+};
+
+ext.pageReadConfirmations.ui.AssignmentDialog.prototype.getBodyHeight = function () {
+	return ext.pageReadConfirmations.ui.AssignmentDialog.super.prototype.getBodyHeight.call( this ) + 1;
+};
+
+ext.pageReadConfirmations.ui.AssignmentDialog.prototype.updateSize = function () {
+	ext.pageReadConfirmations.ui.AssignmentDialog.super.prototype.updateSize.call( this );
+
+	const frame = this.$frame[ 0 ];
+	const $scrollables = this.$body.find( '*' ).addBack().filter(
+		( i, el ) => /auto|scroll/.test( getComputedStyle( el ).overflowY )
+	);
+	this.$body.css( 'overflow', 'hidden' );
+	cancelAnimationFrame( this.updateSizeRequest );
+	const step = () => {
+		$scrollables.each( ( i, el ) => {
+			$( el ).triggerHandler( 'scroll' );
+		} );
+		if ( frame.getAnimations && frame.getAnimations().length ) {
+			this.updateSizeRequest = requestAnimationFrame( step );
+		} else {
+			this.$body.css( 'overflow', '' );
+		}
+	};
+	step();
+
+	return this;
 };
 
 /**
